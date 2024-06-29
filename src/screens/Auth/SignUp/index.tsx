@@ -39,7 +39,7 @@ const SignUp: React.FC = () => {
           <Input placeholder='Telefone' />
           <Input placeholder='Senha' secureTextEntry />
           <Input placeholder='Confirmar senha' secureTextEntry />
-          <Button title='Criar' bgColor='gray.100'></Button>
+          <Button title='Criar' bgColor='gray.100' isFullWidth></Button>
         </Center>
 
         <Center mt={16} px={10}>
@@ -49,6 +49,7 @@ const SignUp: React.FC = () => {
           <Button
             title='Ir para o login'
             bgColor='gray.500'
+            isFullWidth
             onPress={goBack}
           ></Button>
         </Center>

@@ -3,13 +3,15 @@ import {} from 'phosphor-react-native';
 import React from 'react';
 type TProps = IButtonProps & {
   title: string;
+  isFullWidth?: boolean;
   iconLeft?: React.JSX.Element;
   iconRight?: React.JSX.Element;
   bgColor?: 'gray.100' | 'blueLight.900' | 'gray.500';
-  variant?: 'solid' | 'outline';
+  variant?: 'solid' | 'outline' | 'ghost';
 };
 const Button: React.FC<TProps> = ({
   title,
+  isFullWidth = false,
   iconLeft,
   iconRight,
   bgColor = 'gray.100',
@@ -18,22 +20,30 @@ const Button: React.FC<TProps> = ({
 }) => {
   return (
     <ButtonNB
-      w='full'
+      w={isFullWidth ? 'full' : 'auto'}
       h={11}
-      bg={variant === 'outline' ? 'transparent' : bgColor}
+      bg={
+        variant === 'outline' || variant === 'ghost' ? 'transparent' : bgColor
+      }
       rounded='sm'
-      _pressed={{ bg: variant === 'outline' ? 'gray.500' : 'gray.700' }}
+      _pressed={{
+        bg:
+          variant === 'outline' || variant === 'ghost'
+            ? 'gray.500'
+            : 'gray.700',
+      }}
       {...rest}
+      startIcon={iconLeft ? iconLeft : <></>}
+      endIcon={iconRight ? iconRight : <></>}
     >
       <Row alignItems='center'>
-        {iconLeft && iconLeft}
         <Text
           fontSize='sm'
           fontFamily='heading'
           color={
             bgColor === 'gray.500'
               ? 'gray.100'
-              : variant === 'outline'
+              : variant === 'outline' || variant === 'ghost'
               ? 'gray.100'
               : 'gray.700'
           }
@@ -42,7 +52,6 @@ const Button: React.FC<TProps> = ({
         >
           {title}
         </Text>
-        {iconRight && iconRight}
       </Row>
     </ButtonNB>
   );

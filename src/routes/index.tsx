@@ -5,14 +5,14 @@ import AppRoutes from './app.route';
 import AuthRoutes from './auth.route';
 
 const Routes: React.FC = () => {
-  const isLogged = false;
+  const isLogged = true;
   const { colors } = useTheme();
 
   const theme = DefaultTheme;
-  theme.colors.background = colors.gray[700];
+  theme.colors.background = colors.gray[600];
 
   return (
-    <Box flex={1} bg='gray.700'>
+    <Box flex={1} bg='gray.600'>
       <NavigationContainer>
         {isLogged ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>

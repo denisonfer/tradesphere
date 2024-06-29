@@ -36,7 +36,7 @@ const SignIn: React.FC = () => {
             autoCapitalize='none'
           />
           <Input placeholder='Senha' secureTextEntry />
-          <Button title='Entrar' bgColor='blueLight.900'></Button>
+          <Button title='Entrar' bgColor='blueLight.900' isFullWidth></Button>
         </Center>
 
         <Center mt={14} px={10} pt={24}>
@@ -46,6 +46,7 @@ const SignIn: React.FC = () => {
           <Button
             title='Criar uma conta'
             bgColor='gray.500'
+            isFullWidth
             onPress={() => navigate('SignUp')}
           ></Button>
         </Center>
