@@ -18,7 +18,7 @@ type TProps = IPressableProps & {
 
 const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
   return (
-    <Pressable w={40} {...rest}>
+    <Pressable w='45%' {...rest}>
       <Box position='relative' mb={1}>
         <Image
           rounded='md'
@@ -26,7 +26,6 @@ const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
           alt='Imagem do anuncio'
           h={32}
           resizeMode='cover'
-          w='full'
         />
         <HStack
           alignItems='center'

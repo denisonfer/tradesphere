@@ -2,6 +2,8 @@ import {
   BottomTabNavigationProp,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
+import { RouteProp } from '@react-navigation/native';
+import AddAds from '@screens/App/AddAds';
 import Home from '@screens/App/Home';
 import MyAds from '@screens/App/MyAds';
 import SignOut from '@screens/App/SignOut';
@@ -14,9 +16,13 @@ type TAppRoutes = {
   Home: undefined;
   MyAds: undefined;
   SignOut: undefined;
+  AddAds: {
+    isEditMode?: boolean;
+  };
 };
 
 export type TAppNavigatorRoutesProps = BottomTabNavigationProp<TAppRoutes>;
+export type TAddAdsRouteParams = RouteProp<TAppRoutes, 'AddAds'>;
 
 const { Navigator, Screen } = createBottomTabNavigator<TAppRoutes>();
 const AppRoutes: React.FC = () => {
@@ -56,6 +62,13 @@ const AppRoutes: React.FC = () => {
           tabBarIcon: () => (
             <IconSignOut size={24} color={colors.redLight[900]} />
           ),
+        }}
+      />
+      <Screen
+        name='AddAds'
+        component={AddAds}
+        options={{
+          tabBarButton: () => null,
         }}
       />
     </Navigator>

@@ -5,7 +5,7 @@ import AppRoutes from './app.route';
 import AuthRoutes from './auth.route';
 
 const Routes: React.FC = () => {
-  const isLogged = true;
+  const isLogged = false;
   const { colors } = useTheme();
 
   const theme = DefaultTheme;

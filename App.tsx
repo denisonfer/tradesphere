@@ -10,6 +10,7 @@ import '@configs/reactotron';
 import Routes from '@routes/index';
 import { theme } from '@styles/theme';
 import { NativeBaseProvider } from 'native-base';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,8 +19,10 @@ export default function App() {
   });
 
   return (
-    <NativeBaseProvider theme={theme}>
-      {!fontsLoaded ? <Loading /> : <Routes />}
-    </NativeBaseProvider>
+    <GestureHandlerRootView>
+      <NativeBaseProvider theme={theme}>
+        {!fontsLoaded ? <Loading /> : <Routes />}
+      </NativeBaseProvider>
+    </GestureHandlerRootView>
   );
 }

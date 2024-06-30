@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 type TProps = IInputProps & {};
 const Input: React.FC<TProps> = ({ secureTextEntry, ...rest }) => {
-  const [showPass, setShowPass] = useState(false);
+  const [showPass, setShowPass] = useState(!secureTextEntry);
 
   return (
     <InputNB
