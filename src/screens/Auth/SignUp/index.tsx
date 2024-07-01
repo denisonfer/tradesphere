@@ -1,13 +1,28 @@
 import Button from '@components/Button';
 import Input from '@components/Input';
-import { Center, Heading, Text, VStack } from 'native-base';
-import React, { useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import {
+  Avatar,
+  Box,
+  Center,
+  Heading,
+  IconButton,
+  Text,
+  VStack,
+  useTheme,
+  useToast,
+} from 'native-base';
+import React, { useCallback, useState } from 'react';
 
 import Logo from '@assets/images/logo.svg';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import { PencilSimpleLine } from 'phosphor-react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { api } from 'src/services/api';
 import * as yup from 'yup';
 
 type TFormData = {
@@ -23,8 +38,8 @@ const signUpSchema = yup.object().shape({
   email: yup.string().required('Email obrigatório').email('Email inválido'),
   phone: yup
     .string()
-    .required('Telefone obrigatório')
-    .matches(/^\(\d{2}\) 9\d{4}-\d{4}$/, 'Telefone inválido'),
+    .required('Telefone obrigatório. Ex.: (99)999999999')
+    .matches(/^\(\d{2}\)9\d{4}\d{4}$/, 'Telefone inválido'),
   password: yup
     .string()
     .required('Senha obrigatória')
@@ -35,8 +50,53 @@ const signUpSchema = yup.object().shape({
     .oneOf([yup.ref('password')], 'Senhas diferentes'),
 });
 
+const defaultUserImage =
+  'https://www.kindpng.com/picc/m/22-223863_no-avatar-png-circle-transparent-png.png';
+
 const SignUp: React.FC = () => {
+  const { colors } = useTheme();
   const { goBack } = useNavigation();
+  const [userImage, setUserImage] = useState(defaultUserImage);
+  const toast = useToast();
+
+  const mutation = useMutation({
+    mutationKey: ['auth', 'signUp'],
+    mutationFn: async (data: TFormData) => {
+      const { name, email, phone, password } = data;
+
+      const fileExtension = userImage.split('.').pop();
+      const formData = new FormData();
+      formData.append('avatar', {
+        uri: userImage,
+        name: `${name}.${fileExtension}`,
+        type: `image/${fileExtension}`,
+      } as any);
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('tel', phone);
+      formData.append('password', password);
+
+      return await api.post('/users', formData);
+    },
+    onSuccess: () => {
+      toast.show({
+        description: 'Conta criada com sucesso!',
+        placement: 'top',
+        bg: 'green.500',
+        duration: 3000,
+      });
+      goBack();
+    },
+    onError: (error) => {
+      toast.show({
+        description: 'Erro ao criar conta',
+        placement: 'top',
+        bg: 'red.500',
+        duration: 3000,
+      });
+      console.tron?.log?.('Erro ao criar conta', error);
+    },
+  });
 
   const {
     control,
@@ -46,7 +106,46 @@ const SignUp: React.FC = () => {
     resolver: yupResolver(signUpSchema),
   });
 
-  const handleSignUp = useCallback((data: TFormData) => {}, []);
+  const handlePickImage = useCallback(async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: false,
+      quality: 1,
+      aspect: [4, 4],
+      allowsEditing: true,
+    });
+
+    if (!result.canceled) {
+      if (result.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(result.assets[0].uri, {
+          size: true,
+        });
+
+        if (photoInfo.exists && photoInfo.size / 1024 / 1024 > 5) {
+          return toast.show({
+            description: 'A imagem deve ter no máximo 5MB',
+            placement: 'top',
+            bg: 'red.500',
+            duration: 3000,
+          });
+        }
+
+        setUserImage(photoInfo.uri);
+      }
+    }
+  }, []);
+
+  const handleSignUp = useCallback(
+    async (data: TFormData) => {
+      mutation.mutate(data);
+    },
+    [mutation]
+  );
 
   return (
     <KeyboardAwareScrollView>
@@ -65,6 +164,25 @@ const SignUp: React.FC = () => {
             Crie sua conta e use o espaço para comprar itens variados e vender
             seus produtos
           </Text>
+
+          <Box mt={10} position='relative'>
+            <Avatar
+              source={{ uri: userImage || defaultUserImage }}
+              h={20}
+              w={20}
+              borderWidth={2}
+              borderColor='blueLight.900'
+            />
+            <IconButton
+              icon={<PencilSimpleLine size={18} color={colors.gray[700]} />}
+              onPress={handlePickImage}
+              position='absolute'
+              bottom={-10}
+              right={-10}
+              bg='blueLight.900'
+              rounded='full'
+            />
+          </Box>
 
           <Text mt={16} mb={4}>
             Acesse sua conta

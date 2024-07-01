@@ -2,6 +2,11 @@ import { NativeModules, Platform } from 'react-native';
 import { CustomCommand } from 'reactotron-core-client';
 import Reactotron from 'reactotron-react-native';
 import mmkvPlugin from 'reactotron-react-native-mmkv';
+import {
+  QueryClientManager,
+  reactotronReactQuery,
+} from 'reactotron-react-query';
+import { queryClient } from './client';
 import { storage } from './storage';
 
 const showStorageDataCommand: CustomCommand = {
@@ -27,11 +32,21 @@ if (__DEV__) {
   const { scriptURL } = NativeModules.SourceCode;
   scriptHostname = scriptURL.split('://')[1].split(':')[0];
 
+  const queryClientManager = new QueryClientManager({
+    queryClient,
+  });
+
   Reactotron.configure({
     host: Platform.OS === 'ios' ? scriptHostname : emulatorIP,
   })
     .useReactNative()
     .use(mmkvPlugin({ storage }))
+    .use(reactotronReactQuery(queryClientManager))
+    .configure({
+      onDisconnect: () => {
+        queryClientManager.unsubscribe();
+      },
+    })
     .connect();
 
   Reactotron.onCustomCommand(showStorageDataCommand);
