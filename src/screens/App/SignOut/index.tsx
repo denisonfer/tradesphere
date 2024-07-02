@@ -1,22 +1,12 @@
-import { Text } from 'native-base';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useAuthStore } from 'src/stores/useAuthStore';
 
 const SignOut: React.FC = () => {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
-  );
-};
+  const clearTokens = useAuthStore((state) => state.clearTokens());
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  clearTokens;
+
+  return <></>;
+};
 
 export default SignOut;

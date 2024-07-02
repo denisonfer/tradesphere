@@ -39,7 +39,7 @@ const signUpSchema = yup.object().shape({
   phone: yup
     .string()
     .required('Telefone obrigatório. Ex.: (99)999999999')
-    .matches(/^\(\d{2}\)9\d{4}\d{4}$/, 'Telefone inválido'),
+    .matches(/^\d{11}$/, 'Telefone inválido'),
   password: yup
     .string()
     .required('Senha obrigatória')
@@ -94,7 +94,7 @@ const SignUp: React.FC = () => {
         bg: 'red.500',
         duration: 3000,
       });
-      console.tron?.log?.('Erro ao criar conta', error);
+      (console as any).tron.log('Erro ao criar conta', error);
     },
   });
 
@@ -236,6 +236,7 @@ const SignUp: React.FC = () => {
                 onChangeText={onChange}
                 value={value}
                 errorMessage={errors.password?.message}
+                blurOnSubmit={false}
               />
             )}
           />

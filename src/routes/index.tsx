@@ -1,11 +1,12 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { Box, useTheme } from 'native-base';
 import React from 'react';
+import { useAuthStore } from 'src/stores/useAuthStore';
 import AppRoutes from './app.route';
 import AuthRoutes from './auth.route';
 
 const Routes: React.FC = () => {
-  const isLogged = false;
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
   const { colors } = useTheme();
 
   const theme = DefaultTheme;
@@ -14,7 +15,7 @@ const Routes: React.FC = () => {
   return (
     <Box flex={1} bg='gray.600'>
       <NavigationContainer>
-        {isLogged ? <AppRoutes /> : <AuthRoutes />}
+        {isAuthenticated ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   );

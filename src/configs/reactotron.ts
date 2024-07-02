@@ -1,6 +1,6 @@
 import { NativeModules, Platform } from 'react-native';
 import { CustomCommand } from 'reactotron-core-client';
-import Reactotron from 'reactotron-react-native';
+import Reactotron, { ReactotronReactNative } from 'reactotron-react-native';
 import mmkvPlugin from 'reactotron-react-native-mmkv';
 import {
   QueryClientManager,
@@ -16,7 +16,7 @@ const showStorageDataCommand: CustomCommand = {
     const allKeys = storage.getAllKeys();
     allKeys.forEach((key) => {
       const jsonData = storage.getString(key);
-      console.tron?.log?.(
+      (console as any).tron.log(
         'Dados salvos no MMKV Storage:',
         JSON.parse(jsonData!)
       );
@@ -40,7 +40,7 @@ if (__DEV__) {
     host: Platform.OS === 'ios' ? scriptHostname : emulatorIP,
   })
     .useReactNative()
-    .use(mmkvPlugin({ storage }))
+    .use(mmkvPlugin<ReactotronReactNative>({ storage }))
     .use(reactotronReactQuery(queryClientManager))
     .configure({
       onDisconnect: () => {
@@ -51,5 +51,5 @@ if (__DEV__) {
 
   Reactotron.onCustomCommand(showStorageDataCommand);
   //Reactotron.onCustomCommand(getCurrentCourseModulesCommand);
-  console.tron = Reactotron;
+  (console as any).tron = Reactotron;
 }

@@ -1,15 +1,18 @@
 import Button from '@components/Button';
 import Input from '@components/Input';
+import { useNavigation } from '@react-navigation/native';
+import { useMutation } from '@tanstack/react-query';
 import { Center, Heading, ScrollView, Text, VStack } from 'native-base';
 import React, { useCallback } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import Logo from '@assets/images/logo.svg';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigation } from '@react-navigation/native';
 import { TAuthNavigatorRoutesProps } from '@routes/auth.route';
-
-import { Controller, useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { api } from 'src/services/api';
+import { useAuthStore } from 'src/stores/useAuthStore';
+import { TSignInResponse } from './types';
 
 type TFormData = {
   email: string;
@@ -23,6 +26,25 @@ const signInSchema = yup.object().shape({
 
 const SignIn: React.FC = () => {
   const { navigate } = useNavigation<TAuthNavigatorRoutesProps>();
+  const setTokens = useAuthStore((state) => state.setTokens);
+
+  const mutation = useMutation({
+    mutationKey: ['auth', 'signIn'],
+    mutationFn: async (data: TFormData) => {
+      const { email, password } = data;
+      return await api.post<TSignInResponse>('/sessions', {
+        email,
+        password,
+      });
+    },
+    onSuccess: ({ token, refresh_token }) => {
+      (console as any).tron.log('data: ', token, refresh_token);
+      setTokens(token, refresh_token);
+    },
+    onError: (error) => {
+      (console as any).tron.log('error: ', error);
+    },
+  });
 
   const {
     control,
@@ -32,9 +54,12 @@ const SignIn: React.FC = () => {
     resolver: yupResolver(signInSchema),
   });
 
-  const handleSignIn = useCallback((data: TFormData) => {
-    console.log(data);
-  }, []);
+  const handleSignIn = useCallback(
+    (data: TFormData) => {
+      mutation.mutate(data);
+    },
+    [mutation]
+  );
 
   return (
     <ScrollView

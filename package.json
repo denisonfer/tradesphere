@@ -17,6 +17,7 @@
     "@react-navigation/native-stack": "^6.9.26",
     "@tanstack/react-query": "^5.49.2",
     "axios": "^1.7.2",
+    "base-64": "^1.0.0",
     "expo": "~51.0.14",
     "expo-file-system": "~17.0.1",
     "expo-font": "~12.0.7",
@@ -34,12 +35,16 @@
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
-    "yup": "^1.4.0"
+    "utf8": "^3.0.0",
+    "yup": "^1.4.0",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/base-64": "^1.0.2",
     "@types/react": "~18.2.45",
     "@types/react-native": "^0.73.0",
+    "@types/utf8": "^3.0.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "patch-package": "^8.0.0",
     "react-native-svg-transformer": "^1.4.0",
