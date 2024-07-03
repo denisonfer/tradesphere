@@ -8,9 +8,11 @@ import { Eye, EyeSlash } from 'phosphor-react-native';
 import React, { useState } from 'react';
 
 type TProps = IInputProps & {
+  formatType?: 'phone' | 'currency';
   errorMessage?: string;
 };
 const Input: React.FC<TProps> = ({
+  formatType,
   errorMessage,
   secureTextEntry,
   isInvalid,

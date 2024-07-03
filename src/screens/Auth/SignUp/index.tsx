@@ -87,15 +87,6 @@ const SignUp: React.FC = () => {
       });
       goBack();
     },
-    onError: (error) => {
-      toast.show({
-        description: 'Erro ao criar conta',
-        placement: 'top',
-        bg: 'red.500',
-        duration: 3000,
-      });
-      (console as any).tron.log('Erro ao criar conta', error);
-    },
   });
 
   const {

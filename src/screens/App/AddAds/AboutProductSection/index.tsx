@@ -2,13 +2,42 @@ import Input from '@components/Input';
 import Label from '@components/Label';
 import { Radio, Stack, VStack } from 'native-base';
 import React from 'react';
+import { Controller } from 'react-hook-form';
+import { TPropsNestedSection } from '../types';
 
-const AboutProductSection: React.FC = () => {
+type TProps = TPropsNestedSection & {};
+
+const AboutProductSection: React.FC<TProps> = ({ control, errors }) => {
   return (
     <VStack mb={8}>
       <Label text='Sobre o produto' />
-      <Input placeholder='Título do anúncio' my={4} />
-      <Input placeholder='Descrição do produto' multiline h={40} mb={4} />
+      <Controller
+        control={control}
+        name='name'
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder='Título do anúncio'
+            onChangeText={onChange}
+            value={value}
+            errorMessage={errors.name?.message}
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name='description'
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder='Descrição do produto'
+            multiline
+            h={40}
+            onChangeText={onChange}
+            value={value}
+            errorMessage={errors.description?.message}
+          />
+        )}
+      />
 
       <Radio.Group name='isNew' defaultValue='true' accessibilityLabel='Is new'>
         <Stack direction='row' space={5}>

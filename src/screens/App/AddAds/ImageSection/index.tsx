@@ -12,17 +12,19 @@ import {
   useToast,
 } from 'native-base';
 import { Plus, X } from 'phosphor-react-native';
-import React, { useCallback, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback } from 'react';
+import { TProductImage } from '../types';
 
-type TProductImage = {
-  id: string;
-  uri: string;
+type TProps = {
+  productsImages: TProductImage[];
+  setProductsImages: Dispatch<SetStateAction<TProductImage[]>>;
 };
-const ImageSection: React.FC = () => {
+const ImageSection: React.FC<TProps> = ({
+  productsImages,
+  setProductsImages,
+}) => {
   const { colors } = useTheme();
   const toast = useToast();
-
-  const [productImages, setProductImages] = useState<TProductImage[]>([]);
 
   const handlePickImage = useCallback(async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -53,7 +55,7 @@ const ImageSection: React.FC = () => {
           });
         }
 
-        setProductImages((oldState) => [
+        setProductsImages((oldState) => [
           ...oldState,
           {
             id: Math.random().toString(),
@@ -65,7 +67,9 @@ const ImageSection: React.FC = () => {
   }, []);
 
   const handleRemoveProductImage = useCallback((id: string) => {
-    setProductImages((oldState) => oldState.filter((image) => image.id !== id));
+    setProductsImages((oldState) =>
+      oldState.filter((image) => image.id !== id)
+    );
   }, []);
 
   return (
@@ -76,7 +80,7 @@ const ImageSection: React.FC = () => {
       </Text>
 
       <HStack mt={4} mb={8}>
-        {productImages.map((image, index) => (
+        {productsImages.map((image, index) => (
           <VStack
             h={25}
             w={25}
@@ -111,7 +115,7 @@ const ImageSection: React.FC = () => {
             />
           </VStack>
         ))}
-        {productImages.length < 3 && (
+        {productsImages.length < 3 && (
           <Button
             h={25}
             w={25}

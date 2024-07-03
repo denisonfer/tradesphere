@@ -2,17 +2,30 @@ import Input from '@components/Input';
 import Label from '@components/Label';
 import { Checkbox, Switch, VStack } from 'native-base';
 import React from 'react';
+import { Controller } from 'react-hook-form';
+import { TPropsNestedSection } from '../types';
 
-const SaleSection: React.FC = () => {
+type TProps = TPropsNestedSection & {};
+
+const SaleSection: React.FC<TProps> = ({ control, errors }) => {
   return (
     <VStack>
       <Label text='Venda' />
-      <Input
-        placeholder='Valor do produto'
-        my={4}
-        InputLeftElement={<Label text='R$' ml={4} />}
-        keyboardType='numeric'
+      <Controller
+        name='price'
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder='Valor do produto'
+            keyboardType='numeric'
+            onChangeText={onChange}
+            value={value}
+            InputLeftElement={<Label text='R$' ml={4} />}
+            errorMessage={errors.price?.message}
+          />
+        )}
       />
+
       <Label text='Aceita troca?' mb={4} />
       <Switch onTrackColor='blueLight.900' />
 
