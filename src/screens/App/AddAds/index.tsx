@@ -5,18 +5,25 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
-import { TAddAdsRouteParams } from '@routes/app.route';
-import { HStack, VStack } from 'native-base';
+import { HStack, VStack, useToast } from 'native-base';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as yup from 'yup';
 
 import Button from '@components/Button';
+import { EQueryKeys } from '@shared/queryKeys';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from 'src/services/api';
 import AboutProductSection from './AboutProductSection';
 import ImageSection from './ImageSection';
 import SaleSection from './SaleSection';
-import { EPaymentMethods, TAdsFormData, TProductImage } from './types';
+import {
+  EPaymentMethods,
+  TAdsFormData,
+  TAdsPostData,
+  TProductImage,
+} from './types';
 
 const adsSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -31,14 +38,15 @@ const adsSchema = yup.object().shape({
 
 const AddAds: React.FC = () => {
   const { goBack } = useNavigation();
-  const route = useRoute<TAddAdsRouteParams>();
+  const route = useRoute();
   const { params } = route;
+  const toast = useToast();
+  const { invalidateQueries } = useQueryClient();
 
   const [productsImages, setProductsImages] = useState<TProductImage[]>([]);
   const [productIsNew, setProductIsNew] = useState('');
   const [acceptTrade, setAcceptTrade] = useState(false);
   const [paymentSelected, setPaymentSelected] = useState<EPaymentMethods[]>([]);
-  console.tron.log('paymentSelected: ', paymentSelected);
 
   const {
     control,
@@ -49,20 +57,83 @@ const AddAds: React.FC = () => {
     resolver: yupResolver(adsSchema),
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: TAdsPostData) => {
+      const {
+        name,
+        description,
+        price,
+        acceptTrade,
+        paymentSelected,
+        productIsNew,
+      } = data;
+
+      return await api.post('/products', {
+        name,
+        description,
+        price,
+        accept_trade: acceptTrade,
+        payment_methods: paymentSelected,
+        is_new: productIsNew === 'true',
+      });
+    },
+    onSuccess: () => {
+      toast.show({
+        description: 'Anúncio criado com sucesso',
+        placement: 'top',
+        bg: 'green.500',
+        duration: 3000,
+      });
+      goBack();
+      invalidateQueries({ queryKey: [EQueryKeys.AdsList] });
+    },
+  });
+
   const handleAdvance = useCallback(
     (data: TAdsFormData) => {
+      if (productsImages.length === 0) {
+        return toast.show({
+          description: 'Adicione pelo menos uma imagem',
+          placement: 'top',
+          bg: 'red.500',
+          duration: 3000,
+        });
+      }
+
+      if (paymentSelected.length === 0) {
+        return toast.show({
+          description: 'Selecione pelo menos um meio de pagamento',
+          placement: 'top',
+          bg: 'red.500',
+          duration: 3000,
+        });
+      }
       const { name, description, price } = data;
       const newAds = {
         name,
         description,
         price,
-        is_new: productIsNew === 'true',
-        accept_trade: acceptTrade,
-        payment_methods: paymentSelected,
+        productIsNew,
+        acceptTrade,
+        paymentSelected,
       };
-      (console as any).tron.log('newAds', newAds);
+
+      mutate(newAds);
     },
     [productsImages, productIsNew, acceptTrade, paymentSelected]
+  );
+
+  const handlePaymentSelector = useCallback(
+    (value: EPaymentMethods) => {
+      if (paymentSelected.includes(value)) {
+        setPaymentSelected((oldState) =>
+          oldState.filter((item) => item !== value)
+        );
+      } else {
+        setPaymentSelected((oldState) => [...oldState, value]);
+      }
+    },
+    [paymentSelected]
   );
 
   useFocusEffect(
@@ -74,45 +145,56 @@ const AddAds: React.FC = () => {
   );
 
   return (
-    <VStack flex={1} p={6}>
+    <VStack flex={1}>
       <Header title={params?.isEditMode ? 'Editar anúncio' : 'Criar anúncio'} />
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
-        <ImageSection
-          productsImages={productsImages}
-          setProductsImages={setProductsImages}
-        />
-
-        <AboutProductSection
-          control={control}
-          errors={errors}
-          productIsNew={productIsNew}
-          setProductIsNew={setProductIsNew}
-        />
-        <SaleSection
-          control={control}
-          errors={errors}
-          acceptTrade={acceptTrade}
-          setAcceptTrade={setAcceptTrade}
-          paymentSelected={paymentSelected}
-          setPaymentSelected={setPaymentSelected}
-        />
-
-        <HStack justifyContent='space-between'>
-          <Button
-            title='Cancelar'
-            bgColor='gray.500'
-            isFullWidth
-            w='48%'
-            onPress={goBack}
+        <VStack px={6} pb={24}>
+          <ImageSection
+            productsImages={productsImages}
+            setProductsImages={setProductsImages}
           />
-          <Button
-            title='Avançar'
-            isFullWidth
-            w='48%'
-            onPress={handleSubmit(handleAdvance)}
+
+          <AboutProductSection
+            control={control}
+            errors={errors}
+            productIsNew={productIsNew}
+            setProductIsNew={setProductIsNew}
           />
-        </HStack>
+          <SaleSection
+            control={control}
+            errors={errors}
+            acceptTrade={acceptTrade}
+            setAcceptTrade={setAcceptTrade}
+            paymentSelected={paymentSelected}
+            handlePaymentSelector={handlePaymentSelector}
+          />
+        </VStack>
       </KeyboardAwareScrollView>
+
+      <HStack
+        justifyContent='space-between'
+        bg='gray.700'
+        px={6}
+        pb={8}
+        pt={4}
+        position='absolute'
+        bottom={0}
+      >
+        <Button
+          title='Cancelar'
+          bgColor='gray.500'
+          isFullWidth
+          w='48%'
+          onPress={goBack}
+        />
+        <Button
+          title='Avançar'
+          isFullWidth
+          w='48%'
+          isLoading={isPending}
+          onPress={handleSubmit(handleAdvance)}
+        />
+      </HStack>
     </VStack>
   );
 };

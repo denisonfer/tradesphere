@@ -15,8 +15,9 @@ const Header: React.FC<TProps> = ({
   const { goBack } = useNavigation();
   return (
     <HStack
-      pt={10}
+      pt={20}
       pb={5}
+      px={6}
       mb={6}
       alignItems='center'
       justifyContent='space-between'

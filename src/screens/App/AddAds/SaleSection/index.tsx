@@ -1,7 +1,7 @@
 import Input from '@components/Input';
 import Label from '@components/Label';
 import { Checkbox, Switch, VStack } from 'native-base';
-import React, { Dispatch, SetStateAction, useCallback } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Controller } from 'react-hook-form';
 import { EPaymentMethods, TPropsNestedSection } from '../types';
 
@@ -9,7 +9,7 @@ type TProps = TPropsNestedSection & {
   acceptTrade: boolean;
   setAcceptTrade: Dispatch<SetStateAction<boolean>>;
   paymentSelected: EPaymentMethods[];
-  setPaymentSelected: Dispatch<SetStateAction<EPaymentMethods[]>>;
+  handlePaymentSelector: (value: EPaymentMethods) => void;
 };
 
 const SaleSection: React.FC<TProps> = ({
@@ -18,7 +18,7 @@ const SaleSection: React.FC<TProps> = ({
   acceptTrade,
   setAcceptTrade,
   paymentSelected,
-  setPaymentSelected,
+  handlePaymentSelector,
 }) => {
   const optionsOfPayment = [
     { label: 'Boleto', value: EPaymentMethods.BOLETO },
@@ -27,23 +27,6 @@ const SaleSection: React.FC<TProps> = ({
     { label: 'Cartão de crédito', value: EPaymentMethods.CARD },
     { label: 'Deposito bancário', value: EPaymentMethods.DEPOSIT },
   ];
-
-  const handlePaymentSelected = useCallback(
-    (value: EPaymentMethods) => {
-      console.tron.log('value: ', value);
-      console.tron.log(
-        'paymentSelected.includes(value): ',
-        paymentSelected.includes(value)
-      );
-      console.tron.log('paymentSelected: ', paymentSelected);
-      if (paymentSelected.includes(value)) {
-        setPaymentSelected(paymentSelected.filter((item) => item !== value));
-      } else {
-        setPaymentSelected((oldState) => [...oldState, value]);
-      }
-    },
-    [paymentSelected]
-  );
 
   return (
     <VStack>
@@ -79,7 +62,8 @@ const SaleSection: React.FC<TProps> = ({
             bg: 'blueLight.900',
           }}
           value={payment.value}
-          onChange={() => handlePaymentSelected(payment.value)}
+          isChecked={paymentSelected.includes(payment.value)}
+          onChange={() => handlePaymentSelector(payment.value)}
         >
           <Label text={payment.label} />
         </Checkbox>

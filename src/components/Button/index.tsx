@@ -1,4 +1,10 @@
-import { Button as ButtonNB, IButtonProps, Row, Text } from 'native-base';
+import {
+  Button as ButtonNB,
+  IButtonProps,
+  Row,
+  Spinner,
+  Text,
+} from 'native-base';
 import {} from 'phosphor-react-native';
 import React from 'react';
 type TProps = IButtonProps & {
@@ -8,6 +14,7 @@ type TProps = IButtonProps & {
   iconRight?: React.JSX.Element;
   bgColor?: 'gray.100' | 'blueLight.900' | 'gray.500';
   variant?: 'solid' | 'outline' | 'ghost';
+  isLoading?: boolean;
 };
 const Button: React.FC<TProps> = ({
   title,
@@ -16,6 +23,7 @@ const Button: React.FC<TProps> = ({
   iconRight,
   bgColor = 'gray.100',
   variant = 'solid',
+  isLoading = false,
   ...rest
 }) => {
   return (
@@ -37,21 +45,25 @@ const Button: React.FC<TProps> = ({
       endIcon={iconRight ? iconRight : <></>}
     >
       <Row alignItems='center'>
-        <Text
-          fontSize='sm'
-          fontFamily='heading'
-          color={
-            bgColor === 'gray.500'
-              ? 'gray.100'
-              : variant === 'outline' || variant === 'ghost'
-              ? 'gray.100'
-              : 'gray.700'
-          }
-          ml={iconLeft ? 2 : 0}
-          mr={iconRight ? 2 : 0}
-        >
-          {title}
-        </Text>
+        {isLoading ? (
+          <Spinner color='blue.900' size='sm' />
+        ) : (
+          <Text
+            fontSize='sm'
+            fontFamily='heading'
+            color={
+              bgColor === 'gray.500'
+                ? 'gray.100'
+                : variant === 'outline' || variant === 'ghost'
+                ? 'gray.100'
+                : 'gray.700'
+            }
+            ml={iconLeft ? 2 : 0}
+            mr={iconRight ? 2 : 0}
+          >
+            {title}
+          </Text>
+        )}
       </Row>
     </ButtonNB>
   );
