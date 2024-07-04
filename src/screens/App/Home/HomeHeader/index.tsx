@@ -1,16 +1,15 @@
 import Button from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
-import { TAppNavigatorRoutesProps } from '@routes/app.route';
 import { Avatar, HStack, Heading, Text, VStack, useTheme } from 'native-base';
 import { Plus } from 'phosphor-react-native';
 import React from 'react';
 
 const HomeHeader: React.FC = () => {
   const { colors } = useTheme();
-  const { navigate } = useNavigation<TAppNavigatorRoutesProps>();
+  const { navigate } = useNavigation();
 
   return (
-    <HStack pt={10} mb='8' alignItems='center' justifyContent='space-between'>
+    <HStack mb={8} alignItems='center' justifyContent='space-between'>
       <Avatar
         borderWidth={2}
         borderColor='blueLight.900'

@@ -1,4 +1,5 @@
 import Label from '@components/Label';
+import * as Crypto from 'expo-crypto';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -13,6 +14,7 @@ import {
 } from 'native-base';
 import { Plus, X } from 'phosphor-react-native';
 import React, { Dispatch, SetStateAction, useCallback } from 'react';
+
 import { TProductImage } from '../types';
 
 type TProps = {
@@ -58,7 +60,7 @@ const ImageSection: React.FC<TProps> = ({
         setProductsImages((oldState) => [
           ...oldState,
           {
-            id: Math.random().toString(),
+            id: Crypto.randomUUID(),
             uri: result.assets[0].uri,
           },
         ]);

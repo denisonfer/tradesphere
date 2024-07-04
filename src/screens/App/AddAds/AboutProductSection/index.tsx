@@ -1,13 +1,21 @@
 import Input from '@components/Input';
 import Label from '@components/Label';
 import { Radio, Stack, VStack } from 'native-base';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Controller } from 'react-hook-form';
 import { TPropsNestedSection } from '../types';
 
-type TProps = TPropsNestedSection & {};
+type TProps = TPropsNestedSection & {
+  productIsNew: string;
+  setProductIsNew: Dispatch<SetStateAction<string>>;
+};
 
-const AboutProductSection: React.FC<TProps> = ({ control, errors }) => {
+const AboutProductSection: React.FC<TProps> = ({
+  control,
+  errors,
+  productIsNew,
+  setProductIsNew,
+}) => {
   return (
     <VStack mb={8}>
       <Label text='Sobre o produto' />
@@ -39,7 +47,12 @@ const AboutProductSection: React.FC<TProps> = ({ control, errors }) => {
         )}
       />
 
-      <Radio.Group name='isNew' defaultValue='true' accessibilityLabel='Is new'>
+      <Radio.Group
+        name='isNew'
+        defaultValue='true'
+        accessibilityLabel='Is new'
+        onChange={(value) => setProductIsNew(value)}
+      >
         <Stack direction='row' space={5}>
           <Radio value='true' colorScheme='blue'>
             Produto novo
