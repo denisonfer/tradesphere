@@ -9,7 +9,7 @@ const HomeHeader: React.FC = () => {
   const { navigate } = useNavigation();
 
   return (
-    <HStack mb={8} alignItems='center' justifyContent='space-between'>
+    <HStack pt={10} mb={8} alignItems='center' justifyContent='space-between'>
       <Avatar
         borderWidth={2}
         borderColor='blueLight.900'

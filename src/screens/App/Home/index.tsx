@@ -118,7 +118,7 @@ const Home: React.FC = () => {
     },
   ];
   return (
-    <VStack flex={1} p={6}>
+    <VStack flex={1} px={6} pt={6}>
       <HomeHeader />
 
       <KeyboardAwareFlatList

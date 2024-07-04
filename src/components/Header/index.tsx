@@ -14,7 +14,13 @@ const Header: React.FC<TProps> = ({
 }) => {
   const { goBack } = useNavigation();
   return (
-    <HStack pb={5} mb={6} alignItems='center' justifyContent='space-between'>
+    <HStack
+      pt={10}
+      pb={5}
+      mb={6}
+      alignItems='center'
+      justifyContent='space-between'
+    >
       {hasBackButton && (
         <Pressable onPress={goBack} h={6} w={6}>
           <ArrowBackIcon size={6} color='gray.100' />
