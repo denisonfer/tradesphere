@@ -1,27 +1,13 @@
-import {
-  DefaultTheme,
-  NavigationContainer,
-  RouteProp,
-} from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Box, useTheme } from 'native-base';
 import React from 'react';
 import { useAuthStore } from 'src/stores/useAuthStore';
 import AppRoutes from './app.route';
 import AuthRoutes from './auth.route';
-import { TAllRoutesParams } from './types/TAllRoutesParams';
+import { TRootStackParams } from './types';
 
-export type RootStackParams = {
-  Login: undefined;
-  Main: undefined;
-} & TAllRoutesParams;
-
-export type AppRoutes = keyof RootStackParams;
-export type AppRouteParams<T extends AppRoutes> = RootStackParams[T];
-export type AppRouteUseParams<T extends AppRoutes> = RouteProp<
-  RootStackParams,
-  T
->;
-
+const { Navigator, Screen } = createNativeStackNavigator<TRootStackParams>();
 const Routes: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
   const { colors } = useTheme();
@@ -32,7 +18,13 @@ const Routes: React.FC = () => {
   return (
     <Box flex={1} bg='gray.600'>
       <NavigationContainer>
-        {!isAuthenticated ? <AuthRoutes /> : <AppRoutes />}
+        <Navigator screenOptions={{ headerShown: false }}>
+          {isAuthenticated ? (
+            <Screen name='Main' component={AppRoutes} />
+          ) : (
+            <Screen name='Login' component={AuthRoutes} />
+          )}
+        </Navigator>
       </NavigationContainer>
     </Box>
   );

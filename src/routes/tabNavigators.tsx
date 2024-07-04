@@ -6,15 +6,15 @@ import { useTheme } from 'native-base';
 import { House, SignOut as IconSignOut, Tag } from 'phosphor-react-native';
 import React from 'react';
 import { Platform } from 'react-native';
-import { TAllRoutesParams } from './types/TAllRoutesParams';
+import { THomeTabParams } from './types';
 
-const { Navigator, Screen } = createBottomTabNavigator<TAllRoutesParams>();
+const { Navigator, Screen } = createBottomTabNavigator<THomeTabParams>();
 const TabNavigators: React.FC = () => {
   const { colors } = useTheme();
 
   return (
     <Navigator
-      initialRouteName='Home'
+      initialRouteName='Resume'
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -29,7 +29,7 @@ const TabNavigators: React.FC = () => {
       }}
     >
       <Screen
-        name='Home'
+        name='Resume'
         component={Home}
         options={{
           tabBarIcon: ({ color }) => <House size={24} color={color} />,

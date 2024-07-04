@@ -1,4 +1,4 @@
-import { RootStackParams } from '@routes/index';
+import { RootStackParams } from '@routes/types/TAllRoutesParams';
 
 declare global {
   namespace ReactNavigation {

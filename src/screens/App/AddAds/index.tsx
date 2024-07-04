@@ -1,6 +1,7 @@
 import Header from '@components/Header';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
+  RouteProp,
   useFocusEffect,
   useNavigation,
   useRoute,
@@ -12,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as yup from 'yup';
 
 import Button from '@components/Button';
+import { TMainStackParams } from '@routes/types';
 import { EQueryKeys } from '@shared/queryKeys';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from 'src/services/api';
@@ -24,6 +26,8 @@ import {
   TAdsPostData,
   TProductImage,
 } from './types';
+
+type TAddAdsRouteParams = RouteProp<TMainStackParams, 'AddAds'>;
 
 const adsSchema = yup.object().shape({
   name: yup.string().required('Nome obrigatório'),
@@ -38,7 +42,7 @@ const adsSchema = yup.object().shape({
 
 const AddAds: React.FC = () => {
   const { goBack } = useNavigation();
-  const route = useRoute();
+  const route = useRoute<TAddAdsRouteParams>();
   const { params } = route;
   const toast = useToast();
   const { invalidateQueries } = useQueryClient();
