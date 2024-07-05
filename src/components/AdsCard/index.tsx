@@ -20,7 +20,6 @@ type TProps = IPressableProps & {
 
 const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
   const { data: avatarUrl } = useGetImage(adsItem.user.avatar);
-  console.tron.log('avatar: ', avatarUrl);
   return (
     <Pressable w='45%' {...rest}>
       <Box position='relative' mb={1}>
@@ -39,7 +38,9 @@ const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
           p={1}
         >
           <Avatar
-            source={{ uri: avatarUrl ?? defaultNoImage }}
+            source={{
+              uri: avatarUrl ?? defaultNoImage,
+            }}
             h={7}
             w={7}
             mr={2}

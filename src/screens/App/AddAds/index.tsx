@@ -40,7 +40,7 @@ const AddAds: React.FC = () => {
   const toast = useToast();
 
   const [productsImages, setProductsImages] = useState<TProductImage[]>([]);
-  const [productIsNew, setProductIsNew] = useState('');
+  const [productIsNew, setProductIsNew] = useState('true');
   const [acceptTrade, setAcceptTrade] = useState(false);
   const [paymentSelected, setPaymentSelected] = useState<EPaymentMethods[]>([]);
 
