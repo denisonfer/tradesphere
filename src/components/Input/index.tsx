@@ -16,42 +16,33 @@ const Input: React.FC<TProps> = ({
   isInvalid,
   ...rest
 }) => {
-  const [showPass, setShowPass] = useState(!secureTextEntry);
+  const [showPass, setShowPass] = useState(false);
   const isNotValid = !!errorMessage || isInvalid;
-
-  const customTextInputProps = {
-    bg: 'gray.700',
-    h: 11,
-    px: 4,
-    borderWidth: 0,
-    fontSize: 'md',
-    fontFamily: 'body',
-    color: 'gray.200',
-    placeholderTextColor: 'gray.400',
-    isInvalid: isNotValid,
-    InputRightElement: secureTextEntry ? (
-      <>
-        {showPass ? (
-          <Pressable onPress={() => setShowPass(!showPass)} mr={4}>
-            <EyeSlash size={24} />
-          </Pressable>
-        ) : (
-          <Pressable onPress={() => setShowPass(!showPass)} mr={4}>
-            <Eye size={24} />
-          </Pressable>
-        )}
-      </>
-    ) : (
-      <></>
-    ),
-    _focus: { bg: 'gray.700', borderWidth: 1, borderColor: 'gray.300' },
-    _invalid: { borderColor: 'red.500', borderWidth: 1 },
-    ...rest,
-  };
 
   return (
     <FormControl isInvalid={isNotValid} mb={4}>
-      <InputNB {...customTextInputProps} />
+      <InputNB
+        bg='gray.700'
+        h={11}
+        px={4}
+        borderWidth={0}
+        fontSize='md'
+        fontFamily='body'
+        color='gray.200'
+        placeholderTextColor='gray.400'
+        isInvalid={isNotValid}
+        secureTextEntry={secureTextEntry && !showPass}
+        InputRightElement={
+          secureTextEntry ? (
+            <Pressable onPress={() => setShowPass(!showPass)} mr={4}>
+              {showPass ? <EyeSlash size={24} /> : <Eye size={24} />}
+            </Pressable>
+          ) : undefined
+        }
+        _focus={{ bg: 'gray.700', borderWidth: 1, borderColor: 'gray.300' }}
+        _invalid={{ borderColor: 'red.500', borderWidth: 1 }}
+        {...rest}
+      />
       <FormControl.ErrorMessage>{errorMessage}</FormControl.ErrorMessage>
     </FormControl>
   );

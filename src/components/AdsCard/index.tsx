@@ -1,4 +1,6 @@
-import { IProductAds } from '@shared/interfaces/IProductAds';
+import { IResponseGetAds } from '@screens/App/Home/types';
+import useGetImage from '@shared/hooks/useGetImage';
+import { defaultNoImage } from '@utils/index';
 import {
   Avatar,
   Badge,
@@ -13,16 +15,18 @@ import {
 import React from 'react';
 
 type TProps = IPressableProps & {
-  adsItem: IProductAds;
+  adsItem: IResponseGetAds;
 };
 
 const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
+  const { data: avatarUrl } = useGetImage(adsItem.user.avatar);
+  console.tron.log('avatar: ', avatarUrl);
   return (
     <Pressable w='45%' {...rest}>
       <Box position='relative' mb={1}>
         <Image
           rounded='md'
-          source={{ uri: adsItem.productImage }}
+          source={{ uri: adsItem.product_images[0]?.url ?? defaultNoImage }}
           alt='Imagem do anuncio'
           h={32}
           resizeMode='cover'
@@ -35,21 +39,21 @@ const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
           p={1}
         >
           <Avatar
-            source={{ uri: adsItem.avatar }}
+            source={{ uri: avatarUrl ?? defaultNoImage }}
             h={7}
             w={7}
             mr={2}
             borderWidth={2}
             borderColor='gray.700'
           />
-          <Badge rounded={'full'} bg={adsItem.isNew ? 'blue.900' : 'gray.200'}>
+          <Badge rounded={'full'} bg={adsItem.is_new ? 'blue.900' : 'gray.200'}>
             <Text fontFamily='heading' color='gray.700'>
-              {adsItem.isNew ? 'Novo' : 'Usado'}
+              {adsItem.is_new ? 'Novo' : 'Usado'}
             </Text>
           </Badge>
         </HStack>
       </Box>
-      <Text>{adsItem.title}</Text>
+      <Text>{adsItem.name}</Text>
       <Heading fontFamily='heading'>
         {adsItem.price.toLocaleString('pt-br', {
           style: 'currency',

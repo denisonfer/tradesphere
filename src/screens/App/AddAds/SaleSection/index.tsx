@@ -1,4 +1,4 @@
-import Input from '@components/Input';
+import InputMoney from '@components/Input/InputMoney';
 import Label from '@components/Label';
 import { Checkbox, Switch, VStack } from 'native-base';
 import React, { Dispatch, SetStateAction } from 'react';
@@ -35,14 +35,24 @@ const SaleSection: React.FC<TProps> = ({
         name='price'
         control={control}
         render={({ field: { onChange, value } }) => (
-          <Input
+          <>
+            <InputMoney
+              placeholder='Valor do produto'
+              onChangeText={onChange}
+              value={value}
+              errorMessage={errors.price?.message}
+              InputLeftElement={<Label text='R$' />}
+              keyboardType='numeric'
+            />
+            {/* <Input
             placeholder='Valor do produto'
             onChangeText={onChange}
             value={value}
             InputLeftElement={<Label text='R$' />}
             keyboardType='numeric'
             errorMessage={errors.price?.message}
-          />
+          /> */}
+          </>
         )}
       />
 

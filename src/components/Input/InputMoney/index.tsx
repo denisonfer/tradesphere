@@ -2,6 +2,7 @@ import React from 'react';
 
 import { FormControl, useTheme } from 'native-base';
 import { TextInputMask, TextInputMaskProps } from 'react-native-masked-text';
+import Input from '..';
 
 type TProps = TextInputMaskProps & {
   errorMessage?: string;
@@ -22,6 +23,7 @@ const InputMoney: React.FC<TProps> = ({
         placeholderTextColor={colors.gray[400]}
         value={value}
         includeRawValueInChangeText
+        customTextInput={Input}
         options={{
           precision: 2,
           separator: ',',
@@ -29,14 +31,14 @@ const InputMoney: React.FC<TProps> = ({
           unit: '',
           suffixUnit: '',
         }}
-        style={{
+        /* style={{
           backgroundColor: colors.gray[700],
           height: 42,
           borderRadius: 4,
           paddingHorizontal: 16,
           fontSize: 16,
           fontFamily: fonts.body,
-        }}
+        }} */
         {...rest}
       />
 

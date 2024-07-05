@@ -139,8 +139,8 @@ const SignUp: React.FC = () => {
   );
 
   return (
-    <KeyboardAwareScrollView>
-      <VStack flex={1}>
+    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+      <VStack flex={1} pb={10}>
         <Center
           bg='gray.600'
           px={10}

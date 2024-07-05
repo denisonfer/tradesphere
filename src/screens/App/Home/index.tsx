@@ -25,110 +25,20 @@ import { EQueryKeys } from '@shared/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 import { api } from 'src/services/api';
 import FilterModal from './FilterModal';
+import { IResponseGetAds } from './types';
 
 const Home: React.FC = () => {
   const modalRef = useRef<Modalize>(null);
   const { colors } = useTheme();
 
-  const mockData = [
-    {
-      id: 1,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: false,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 2,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: true,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 3,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: true,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 4,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: true,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 5,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: false,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 6,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: false,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 7,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: false,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-    {
-      id: 8,
-      avatar:
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
-      title: 'Cadeira gamer',
-      description: 'Cadeira gamer com design moderno',
-      isNew: false,
-      price: 59.9,
-      productImage:
-        'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
-    },
-  ];
-
-  const { data, isLoading } = useQuery({
+  const { data: adsData, isLoading } = useQuery({
     queryKey: [EQueryKeys.AdsList],
     queryFn: async () => {
-      return await api.get('/products');
+      return await api.get<IResponseGetAds[]>('/products');
     },
   });
 
-  console.tron.log('data: ', data);
+  console.tron.log('data: ', adsData);
 
   return (
     <VStack flex={1} px={6} pt={6}>
@@ -190,7 +100,7 @@ const Home: React.FC = () => {
             />
           </VStack>
         }
-        data={mockData}
+        data={adsData ?? []}
         numColumns={2}
         keyExtractor={(item) => String(item.id)}
         showsVerticalScrollIndicator={false}
@@ -199,7 +109,10 @@ const Home: React.FC = () => {
           marginBottom: 24,
           gap: 20,
         }}
-        renderItem={({ item }) => <AdsCard adsItem={item} />}
+        renderItem={({ item }: { item: IResponseGetAds }) => (
+          <AdsCard adsItem={item} />
+        )}
+        ListEmptyComponent={<Text>Nenhum anúncio encontrado</Text>}
       />
 
       <Modalize ref={modalRef} adjustToContentHeight>
