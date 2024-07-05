@@ -56,12 +56,15 @@ const ImageSection: React.FC<TProps> = ({
             duration: 3000,
           });
         }
+        const fileExtension = photoInfo.uri.split('.').pop();
 
         setProductsImages((oldState) => [
           ...oldState,
           {
             id: Crypto.randomUUID(),
             uri: result.assets[0].uri,
+            name: `${Crypto.randomUUID()}.${fileExtension}`,
+            type: `image/${fileExtension}`,
           },
         ]);
       }

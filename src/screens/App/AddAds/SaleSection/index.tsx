@@ -37,10 +37,10 @@ const SaleSection: React.FC<TProps> = ({
         render={({ field: { onChange, value } }) => (
           <Input
             placeholder='Valor do produto'
-            keyboardType='numeric'
             onChangeText={onChange}
             value={value}
-            InputLeftElement={<Label text='R$' ml={4} />}
+            InputLeftElement={<Label text='R$' />}
+            keyboardType='numeric'
             errorMessage={errors.price?.message}
           />
         )}

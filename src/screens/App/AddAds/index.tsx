@@ -14,18 +14,11 @@ import * as yup from 'yup';
 
 import Button from '@components/Button';
 import { TMainStackParams } from '@routes/types';
-import { EQueryKeys } from '@shared/queryKeys';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from 'src/services/api';
 import AboutProductSection from './AboutProductSection';
 import ImageSection from './ImageSection';
 import SaleSection from './SaleSection';
-import {
-  EPaymentMethods,
-  TAdsFormData,
-  TAdsPostData,
-  TProductImage,
-} from './types';
+import useCreateAds from './hooks/useCreateAds';
+import { EPaymentMethods, TAdsFormData, TProductImage } from './types';
 
 type TAddAdsRouteParams = RouteProp<TMainStackParams, 'AddAds'>;
 
@@ -45,52 +38,22 @@ const AddAds: React.FC = () => {
   const route = useRoute<TAddAdsRouteParams>();
   const { params } = route;
   const toast = useToast();
-  const { invalidateQueries } = useQueryClient();
 
   const [productsImages, setProductsImages] = useState<TProductImage[]>([]);
   const [productIsNew, setProductIsNew] = useState('');
   const [acceptTrade, setAcceptTrade] = useState(false);
   const [paymentSelected, setPaymentSelected] = useState<EPaymentMethods[]>([]);
 
+  const { handleCreateAds, isLoading } = useCreateAds();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
+    register,
     reset,
   } = useForm<TAdsFormData>({
     resolver: yupResolver(adsSchema),
-  });
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: TAdsPostData) => {
-      const {
-        name,
-        description,
-        price,
-        acceptTrade,
-        paymentSelected,
-        productIsNew,
-      } = data;
-
-      return await api.post('/products', {
-        name,
-        description,
-        price,
-        accept_trade: acceptTrade,
-        payment_methods: paymentSelected,
-        is_new: productIsNew === 'true',
-      });
-    },
-    onSuccess: () => {
-      toast.show({
-        description: 'Anúncio criado com sucesso',
-        placement: 'top',
-        bg: 'green.500',
-        duration: 3000,
-      });
-      goBack();
-      invalidateQueries({ queryKey: [EQueryKeys.AdsList] });
-    },
   });
 
   const handleAdvance = useCallback(
@@ -122,9 +85,15 @@ const AddAds: React.FC = () => {
         paymentSelected,
       };
 
-      mutate(newAds);
+      handleCreateAds(newAds, productsImages);
     },
-    [productsImages, productIsNew, acceptTrade, paymentSelected]
+    [
+      productsImages,
+      productIsNew,
+      acceptTrade,
+      paymentSelected,
+      handleCreateAds,
+    ]
   );
 
   const handlePaymentSelector = useCallback(
@@ -195,7 +164,7 @@ const AddAds: React.FC = () => {
           title='Avançar'
           isFullWidth
           w='48%'
-          isLoading={isPending}
+          isLoading={isLoading}
           onPress={handleSubmit(handleAdvance)}
         />
       </HStack>

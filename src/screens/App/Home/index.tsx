@@ -21,6 +21,9 @@ import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import { Modalize } from 'react-native-modalize';
 import HomeHeader from './HomeHeader';
 
+import { EQueryKeys } from '@shared/queryKeys';
+import { useQuery } from '@tanstack/react-query';
+import { api } from 'src/services/api';
 import FilterModal from './FilterModal';
 
 const Home: React.FC = () => {
@@ -117,6 +120,16 @@ const Home: React.FC = () => {
         'https://guiaesperto.com.br/wp-content/uploads/2021/02/melhores-cadeiras-gamer.jpg',
     },
   ];
+
+  const { data, isLoading } = useQuery({
+    queryKey: [EQueryKeys.AdsList],
+    queryFn: async () => {
+      return await api.get('/products');
+    },
+  });
+
+  console.tron.log('data: ', data);
+
   return (
     <VStack flex={1} px={6} pt={6}>
       <HomeHeader />
