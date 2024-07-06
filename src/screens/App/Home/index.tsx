@@ -16,27 +16,41 @@ import {
   Sliders,
   Tag,
 } from 'phosphor-react-native';
-import React, { useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import { Modalize } from 'react-native-modalize';
 import HomeHeader from './HomeHeader';
 
-import { EQueryKeys } from '@shared/queryKeys';
-import { useQuery } from '@tanstack/react-query';
-import { api } from 'src/services/api';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { TMainStackParams } from '@routes/types';
 import FilterModal from './FilterModal';
+import useHomeQueries from './hooks/useHomeQueries';
 import { IResponseGetAds } from './types';
+
+type THomeNavigationProps = NavigationProp<TMainStackParams, 'Home'>;
 
 const Home: React.FC = () => {
   const modalRef = useRef<Modalize>(null);
+  const { navigate } = useNavigation<THomeNavigationProps>();
   const { colors } = useTheme();
 
-  const { data: adsData, isLoading } = useQuery({
-    queryKey: [EQueryKeys.AdsList],
-    queryFn: async () => {
-      return await api.get<IResponseGetAds[]>('/products');
-    },
-  });
+  const { getMyAdsListQuery, getAdsListQuery } = useHomeQueries();
+  const { data: myAdsList, isLoading: isLoadingMyAds } = getMyAdsListQuery;
+  const { data: adsList } = getAdsListQuery;
+
+  const MyAdsListQuantity = useMemo(() => {
+    if (isLoadingMyAds) return 0;
+    if (!myAdsList) return 0;
+    return myAdsList.length;
+  }, [myAdsList]);
+
+  const handleNavigateToMyAds = useCallback(() => {
+    navigate('Home', { screen: 'MyAds' });
+  }, []);
+
+  const handleNavigateToAdsDetail = useCallback((item: IResponseGetAds) => {
+    navigate('AdsDetail', { adsData: item, isPreviewMode: false });
+  }, []);
 
   return (
     <VStack flex={1} px={6} pt={6}>
@@ -58,13 +72,16 @@ const Home: React.FC = () => {
             >
               <Tag size={24} color={colors.blue[900]} />
               <VStack flex={1} ml={4}>
-                <Heading fontFamily='heading'>4</Heading>
-                <Text fontFamily='body'>anúncios ativos</Text>
+                <Heading fontFamily='heading'>{MyAdsListQuantity}</Heading>
+                <Text fontFamily='body'>
+                  {MyAdsListQuantity > 1 ? 'anúncios ativos' : 'anúncio ativo'}
+                </Text>
               </VStack>
               <Button
                 variant='ghost'
                 flexDir='row'
                 endIcon={<ArrowRight size={18} color={colors.blue[900]} />}
+                onPress={handleNavigateToMyAds}
               >
                 <Text fontFamily='heading' color={colors.blue[900]}>
                   Meus anúncios
@@ -98,7 +115,7 @@ const Home: React.FC = () => {
             />
           </VStack>
         }
-        data={adsData ?? []}
+        data={adsList ?? []}
         numColumns={2}
         keyExtractor={(item) => String(item.id)}
         showsVerticalScrollIndicator={false}
@@ -108,7 +125,10 @@ const Home: React.FC = () => {
           gap: 20,
         }}
         renderItem={({ item }: { item: IResponseGetAds }) => (
-          <AdsCard adsItem={item} />
+          <AdsCard
+            adsItem={item}
+            onPress={() => handleNavigateToAdsDetail(item)}
+          />
         )}
         ListEmptyComponent={<Text>Nenhum anúncio encontrado</Text>}
       />

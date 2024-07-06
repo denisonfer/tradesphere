@@ -6,9 +6,9 @@ import { useTheme } from 'native-base';
 import { House, SignOut as IconSignOut, Tag } from 'phosphor-react-native';
 import React from 'react';
 import { Platform } from 'react-native';
-import { THomeTabParams } from './types';
+import { TTabParams } from './types';
 
-const { Navigator, Screen } = createBottomTabNavigator<THomeTabParams>();
+const { Navigator, Screen } = createBottomTabNavigator<TTabParams>();
 const TabNavigators: React.FC = () => {
   const { colors } = useTheme();
 

@@ -1,6 +1,7 @@
 export type TSignInResponse = {
   token: string;
   refresh_token: string;
+  user: TUser;
 };
 export type TUser = {
   id: string;

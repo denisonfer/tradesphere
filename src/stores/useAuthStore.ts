@@ -16,6 +16,7 @@ export const useAuthStore = create(
         isAuthenticated: () => !!get().currentUser,
         setTokens: (token: string, refreshToken: string) =>
           set({ token, refreshToken, currentUser: decodeJWT(token) }),
+        setCurrentUser: (user: TUser) => set({ currentUser: user }),
         setAccessToken: (token: string) =>
           set({ token, currentUser: decodeJWT(token) }),
         clearTokens: () =>

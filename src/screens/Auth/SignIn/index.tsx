@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import Logo from '@assets/images/logo.svg';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { TAuthNavigatorRoutesProps } from '@routes/auth.route';
+import { EQueryKeys } from '@shared/queryKeys';
 import { api } from 'src/services/api';
 import { useAuthStore } from 'src/stores/useAuthStore';
 import { TSignInResponse } from './types';
@@ -27,9 +28,10 @@ const signInSchema = yup.object().shape({
 const SignIn: React.FC = () => {
   const { navigate } = useNavigation<TAuthNavigatorRoutesProps>();
   const setTokens = useAuthStore((state) => state.setTokens);
+  const setCurrentUser = useAuthStore((state) => state.setCurrentUser);
 
   const mutation = useMutation({
-    mutationKey: ['auth', 'signIn'],
+    mutationKey: [EQueryKeys.SignIn],
     mutationFn: async (data: TFormData) => {
       const { email, password } = data;
       return await api.post<TSignInResponse>('/sessions', {
@@ -37,9 +39,9 @@ const SignIn: React.FC = () => {
         password,
       });
     },
-    onSuccess: ({ token, refresh_token }) => {
-      (console as any).tron.log('data: ', token, refresh_token);
+    onSuccess: ({ token, refresh_token, user }) => {
       setTokens(token, refresh_token);
+      setCurrentUser(user);
     },
     onError: (error) => {
       (console as any).tron.log('error: ', error);
@@ -116,6 +118,7 @@ const SignIn: React.FC = () => {
             title='Entrar'
             bgColor='blueLight.900'
             isFullWidth
+            isLoading={mutation.isPending}
             onPress={handleSubmit(handleSignIn)}
           ></Button>
         </Center>

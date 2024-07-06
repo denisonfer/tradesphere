@@ -6,6 +6,7 @@ import TabNavigators from './tabNavigators';
 import { TMainStackParams } from './types';
 
 const { Navigator, Screen } = createNativeStackNavigator<TMainStackParams>();
+
 const AppRoutes: React.FC = () => {
   return (
     <Navigator

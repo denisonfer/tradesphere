@@ -1,5 +1,5 @@
 import { IResponseGetAds } from '@screens/App/Home/types';
-import useGetImage from '@shared/hooks/useGetImage';
+import getImageUrl from '@shared/getImageUrl';
 import {
   Avatar,
   Badge,
@@ -15,13 +15,14 @@ import React from 'react';
 
 type TProps = IPressableProps & {
   adsItem: IResponseGetAds;
+  onPress: () => void;
 };
 
-const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
-  const avatarUrl = useGetImage(adsItem.user.avatar);
-  const productImageUrl = useGetImage(adsItem.product_images[0]?.path);
+const AdsCard: React.FC<TProps> = ({ adsItem, onPress, ...rest }) => {
+  const avatarUrl = getImageUrl(adsItem.user.avatar);
+  const productImageUrl = getImageUrl(adsItem.product_images[0]?.path);
   return (
-    <Pressable w='45%' {...rest}>
+    <Pressable w='45%' {...rest} onPress={onPress}>
       <Box position='relative' mb={1}>
         <Image
           rounded='md'

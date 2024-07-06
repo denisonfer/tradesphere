@@ -40,7 +40,9 @@ const useCreateAds = () => {
       return await api.post('/products/images', formData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [EQueryKeys.AdsList] });
+      queryClient.invalidateQueries({
+        queryKey: [EQueryKeys.AdsList, EQueryKeys.MyAdsList],
+      });
 
       toast.show({
         description: 'Anúncio criado com sucesso',
