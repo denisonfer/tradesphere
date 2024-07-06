@@ -38,8 +38,6 @@ const Home: React.FC = () => {
     },
   });
 
-  console.tron.log('data: ', adsData);
-
   return (
     <VStack flex={1} px={6} pt={6}>
       <HomeHeader />

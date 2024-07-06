@@ -1,6 +1,5 @@
 import { IResponseGetAds } from '@screens/App/Home/types';
 import useGetImage from '@shared/hooks/useGetImage';
-import { defaultNoImage } from '@utils/index';
 import {
   Avatar,
   Badge,
@@ -19,13 +18,14 @@ type TProps = IPressableProps & {
 };
 
 const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
-  const { data: avatarUrl } = useGetImage(adsItem.user.avatar);
+  const avatarUrl = useGetImage(adsItem.user.avatar);
+  const productImageUrl = useGetImage(adsItem.product_images[0]?.path);
   return (
     <Pressable w='45%' {...rest}>
       <Box position='relative' mb={1}>
         <Image
           rounded='md'
-          source={{ uri: adsItem.product_images[0]?.url ?? defaultNoImage }}
+          source={{ uri: productImageUrl }}
           alt='Imagem do anuncio'
           h={32}
           resizeMode='cover'
@@ -39,7 +39,7 @@ const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
         >
           <Avatar
             source={{
-              uri: avatarUrl ?? defaultNoImage,
+              uri: avatarUrl,
             }}
             h={7}
             w={7}
@@ -55,7 +55,7 @@ const AdsCard: React.FC<TProps> = ({ adsItem, ...rest }) => {
         </HStack>
       </Box>
       <Text>{adsItem.name}</Text>
-      <Heading fontFamily='heading'>
+      <Heading fontFamily='heading' fontSize='lg'>
         {adsItem.price.toLocaleString('pt-br', {
           style: 'currency',
           currency: 'BRL',

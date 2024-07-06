@@ -27,9 +27,6 @@ const useCreateAds = () => {
       };
       return await api.post<IResponsePostAds>('/products', newAdsData);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [EQueryKeys.AdsList] });
-    },
   });
 
   const uploadImagesOfAdsMutation = useMutation({
@@ -43,6 +40,8 @@ const useCreateAds = () => {
       return await api.post('/products/images', formData);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [EQueryKeys.AdsList] });
+
       toast.show({
         description: 'Anúncio criado com sucesso',
         placement: 'top',

@@ -3,6 +3,7 @@ import Label from '@components/Label';
 import { Checkbox, Switch, VStack } from 'native-base';
 import React, { Dispatch, SetStateAction } from 'react';
 import { Controller } from 'react-hook-form';
+import { TextInputMask } from 'react-native-masked-text';
 import { EPaymentMethods, TPropsNestedSection } from '../types';
 
 type TProps = TPropsNestedSection & {
@@ -36,22 +37,33 @@ const SaleSection: React.FC<TProps> = ({
         control={control}
         render={({ field: { onChange, value } }) => (
           <>
-            {/* <InputMoney
+            <TextInputMask
+              type='money'
+              options={{
+                precision: 2,
+                separator: ',',
+                delimiter: '.',
+                unit: '',
+                suffixUnit: '',
+              }}
               placeholder='Valor do produto'
               onChangeText={onChange}
-              value={value}
-              errorMessage={errors.price?.message}
-              InputLeftElement={<Label text='R$' />}
+              value={String(value)}
               keyboardType='numeric'
-            /> */}
-            <Input
-              placeholder='Valor do produto'
-              onChangeText={onChange}
-              value={value}
-              InputLeftElement={<Label text='R$' />}
-              keyboardType='numeric'
-              errorMessage={errors.price?.message}
+              customTextInput={Input}
+              customTextInputProps={{
+                errorMessage: errors.price?.message,
+                InputLeftElement: <Label text='R$' ml={2} />,
+              }}
             />
+            {/* <Input
+              placeholder='Valor do produto'
+              onChangeText={onChange}
+              value={value}
+              InputLeftElement={<Label text='R$' />}
+              keyboardType='numeric'
+              errorMessage={errors.price?.message}
+            /> */}
           </>
         )}
       />

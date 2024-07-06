@@ -14,6 +14,7 @@ import * as yup from 'yup';
 
 import Button from '@components/Button';
 import { TMainStackParams } from '@routes/types';
+import { MaskService } from 'react-native-masked-text';
 import AboutProductSection from './AboutProductSection';
 import ImageSection from './ImageSection';
 import SaleSection from './SaleSection';
@@ -27,7 +28,7 @@ const adsSchema = yup.object().shape({
   description: yup.string().required('Descrição obrigatória'),
   price: yup
     .number()
-    .transform((_, originalValue) => Number(originalValue.replace(/,/, '.')))
+    .transform((_, original) => MaskService.toRawValue('money', original))
     .positive('O valor não pode ser negativo')
     .typeError('Informe um valor válido')
     .required('Campo valor é obrigatório'),

@@ -1,17 +1,11 @@
-import { EQueryKeys } from '@shared/queryKeys';
-import { useQuery } from '@tanstack/react-query';
-import { api } from 'src/services/api';
+import { defaultNoImage } from '@utils/index';
+import { BASE_API_URL } from 'src/envs';
 
 const useGetImage = (filePath: string) => {
-  const getImageQuery = useQuery({
-    queryKey: [EQueryKeys.AdsImage, filePath],
-    queryFn: async () => {
-      return await api.get<string>(`/images/${filePath}`);
-    },
-    enabled: !!filePath,
-  });
+  if (!filePath) return defaultNoImage;
+  const imageUrl = `${BASE_API_URL}/images/${filePath}`;
 
-  return getImageQuery;
+  return imageUrl;
 };
 
 export default useGetImage;
