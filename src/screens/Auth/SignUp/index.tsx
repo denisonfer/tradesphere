@@ -17,11 +17,13 @@ import React, { useCallback, useState } from 'react';
 import Logo from '@assets/images/logo.svg';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
+import { EQueryKeys } from '@shared/queryKeys';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import { PencilSimpleLine } from 'phosphor-react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { MaskService, TextInputMask } from 'react-native-masked-text';
 import { api } from 'src/services/api';
 import * as yup from 'yup';
 
@@ -38,8 +40,10 @@ const signUpSchema = yup.object().shape({
   email: yup.string().required('Email obrigatório').email('Email inválido'),
   phone: yup
     .string()
-    .required('Telefone obrigatório. Ex.: (99)999999999')
-    .matches(/^\d{11}$/, 'Telefone inválido'),
+    .transform((_, original) => MaskService.toRawValue('cel-phone', original))
+    .typeError('Celular inválido')
+    .min(11, 'Celular inválido')
+    .required('Telefone obrigatório!'),
   password: yup
     .string()
     .required('Senha obrigatória')
@@ -60,7 +64,7 @@ const SignUp: React.FC = () => {
   const toast = useToast();
 
   const mutation = useMutation({
-    mutationKey: ['auth', 'signUp'],
+    mutationKey: [EQueryKeys.SignUp],
     mutationFn: async (data: TFormData) => {
       const { name, email, phone, password } = data;
 
@@ -209,11 +213,15 @@ const SignUp: React.FC = () => {
             control={control}
             name='phone'
             render={({ field: { onChange, value } }) => (
-              <Input
+              <TextInputMask
+                type='cel-phone'
                 placeholder='Telefone'
                 onChangeText={onChange}
                 value={value}
-                errorMessage={errors.phone?.message}
+                customTextInput={Input}
+                customTextInputProps={{
+                  errorMessage: errors.phone?.message,
+                }}
               />
             )}
           />
