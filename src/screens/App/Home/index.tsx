@@ -23,8 +23,8 @@ import HomeHeader from './HomeHeader';
 
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { TMainStackParams } from '@routes/types';
+import useGetAdsListQueries from '../../../shared/hooks/useGetAdsListQueries';
 import FilterModal from './FilterModal';
-import useHomeQueries from './hooks/useHomeQueries';
 import { IResponseGetAds } from './types';
 
 type THomeNavigationProps = NavigationProp<TMainStackParams, 'Home'>;
@@ -34,9 +34,9 @@ const Home: React.FC = () => {
   const { navigate } = useNavigation<THomeNavigationProps>();
   const { colors } = useTheme();
 
-  const { getMyAdsListQuery, getAdsListQuery } = useHomeQueries();
+  const { getMyAdsListQuery, getAdsListQuery } = useGetAdsListQueries();
   const { data: myAdsList, isLoading: isLoadingMyAds } = getMyAdsListQuery;
-  const { data: adsList } = getAdsListQuery;
+  const { data: adsList, refetch, isLoading } = getAdsListQuery;
 
   const MyAdsListQuantity = useMemo(() => {
     if (isLoadingMyAds) return 0;
@@ -131,6 +131,8 @@ const Home: React.FC = () => {
           />
         )}
         ListEmptyComponent={<Text>Nenhum anúncio encontrado</Text>}
+        onRefresh={refetch}
+        refreshing={isLoading}
       />
 
       <Modalize ref={modalRef} adjustToContentHeight>

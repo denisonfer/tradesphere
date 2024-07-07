@@ -1,23 +1,11 @@
-import {
-  NavigationProp,
-  RouteProp,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
-import { TMainStackParams } from '@routes/types';
 import { Text } from 'native-base';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-type TAdsDetailNavigationProps = NavigationProp<TMainStackParams, 'AdsDetail'>;
-type TAdsDetailRouteParams = RouteProp<TMainStackParams, 'AdsDetail'>;
-
 const AdsDetail: React.FC = () => {
-  const { navigate } = useNavigation<TAdsDetailNavigationProps>();
-  const routes = useRoute();
-  (console as any).tron.log('routes: ', routes.params);
-
-  //navigate('AddAds', { isEditMode: true });
+  /*   const { navigate } = useNavigation<TNavigationProps>();
+  const routes = useRoute<TRouteParams>();
+  (console as any).tron.log('routes: ', routes.params); */
 
   return (
     <View style={styles.container}>

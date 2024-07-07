@@ -1,4 +1,4 @@
-export interface IResponseGetAds {
+interface IAdsBase {
   id: string;
   name: string;
   price: number;
@@ -12,27 +12,17 @@ export interface IResponseGetAds {
     key: string;
     name: string;
   }[];
+}
+
+export interface IResponseGetAds extends IAdsBase {
   user: {
     avatar: string;
   };
 }
-export interface TResponseGetMyAdsList {
-  id: string;
-  name: string;
+export interface IResponseGetMyAdsList extends IAdsBase {
   description: string;
-  is_new: boolean;
-  price: number;
-  accept_trade: boolean;
   user_id: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
-  product_images: {
-    path: string;
-    id: string;
-  }[];
-  payment_methods: {
-    key: string;
-    name: string;
-  }[];
 }

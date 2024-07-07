@@ -22,10 +22,12 @@ const Header: React.FC<TProps> = ({
       alignItems='center'
       justifyContent='space-between'
     >
-      {hasBackButton && (
+      {hasBackButton ? (
         <Pressable onPress={goBack} h={6} w={6}>
           <ArrowBackIcon size={6} color='gray.100' />
         </Pressable>
+      ) : (
+        <View h={6} w={6}></View>
       )}
       {title && (
         <Heading color='gray.100' fontSize='lg' fontFamily='heading'>

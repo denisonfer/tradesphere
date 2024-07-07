@@ -1,4 +1,7 @@
-import { IResponseGetAds } from '@screens/App/Home/types';
+import {
+  IResponseGetAds,
+  IResponseGetMyAdsList,
+} from '@screens/App/Home/types';
 import getImageUrl from '@shared/getImageUrl';
 import {
   Avatar,
@@ -10,20 +13,46 @@ import {
   Image,
   Pressable,
   Text,
+  View,
 } from 'native-base';
 import React from 'react';
 
 type TProps = IPressableProps & {
-  adsItem: IResponseGetAds;
+  adsItem: IResponseGetAds | IResponseGetMyAdsList;
   onPress: () => void;
 };
 
 const AdsCard: React.FC<TProps> = ({ adsItem, onPress, ...rest }) => {
-  const avatarUrl = getImageUrl(adsItem.user.avatar);
+  const avatarUrl = getImageUrl(
+    'user' in adsItem ? adsItem.user.avatar : undefined
+  );
+
   const productImageUrl = getImageUrl(adsItem.product_images[0]?.path);
   return (
     <Pressable w='45%' {...rest} onPress={onPress}>
       <Box position='relative' mb={1}>
+        {'is_active' in adsItem && !adsItem.is_active && (
+          <View
+            position='absolute'
+            h='full'
+            w='full'
+            bg='rgba(0,0,0,0.5)'
+            rounded='md'
+            zIndex={1}
+          />
+        )}
+        {'is_active' in adsItem && !adsItem.is_active && (
+          <Text
+            color='gray.700'
+            fontFamily='heading'
+            position='absolute'
+            zIndex={2}
+            bottom={2}
+            left={2}
+          >
+            ANÚNCIO DESATIVADO
+          </Text>
+        )}
         <Image
           rounded='md'
           source={{ uri: productImageUrl }}
@@ -38,25 +67,42 @@ const AdsCard: React.FC<TProps> = ({ adsItem, onPress, ...rest }) => {
           w='full'
           p={1}
         >
-          <Avatar
-            source={{
-              uri: avatarUrl,
-            }}
-            h={7}
-            w={7}
-            mr={2}
-            borderWidth={2}
-            borderColor='gray.700'
-          />
-          <Badge rounded={'full'} bg={adsItem.is_new ? 'blue.900' : 'gray.200'}>
+          {'user' in adsItem ? (
+            <Avatar
+              source={{
+                uri: avatarUrl,
+              }}
+              h={7}
+              w={7}
+              mr={2}
+              borderWidth={2}
+              borderColor='gray.700'
+            />
+          ) : (
+            <View h={7} w={7} />
+          )}
+          <Badge rounded={'full'} bg={adsItem.is_new ? 'gray.900' : 'gray.200'}>
             <Text fontFamily='heading' color='gray.700'>
               {adsItem.is_new ? 'Novo' : 'Usado'}
             </Text>
           </Badge>
         </HStack>
       </Box>
-      <Text>{adsItem.name}</Text>
-      <Heading fontFamily='heading' fontSize='lg'>
+      <Text
+        fontFamily='body'
+        color={
+          'is_active' in adsItem && !adsItem.is_active ? 'gray.400' : 'gray.200'
+        }
+      >
+        {adsItem.name}
+      </Text>
+      <Heading
+        fontFamily='heading'
+        fontSize='lg'
+        color={
+          'is_active' in adsItem && !adsItem.is_active ? 'gray.400' : 'gray.200'
+        }
+      >
         {adsItem.price.toLocaleString('pt-br', {
           style: 'currency',
           currency: 'BRL',

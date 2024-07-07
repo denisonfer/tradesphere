@@ -2,14 +2,17 @@ import { EQueryKeys } from '@shared/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 import { api } from 'src/services/api';
 import { useAuthStore } from 'src/stores/useAuthStore';
-import { IResponseGetAds, TResponseGetMyAdsList } from '../types';
+import {
+  IResponseGetAds,
+  IResponseGetMyAdsList,
+} from '../../screens/App/Home/types';
 
-const useHomeQueries = () => {
+const useGetAdsListQueries = () => {
   const currentUser = useAuthStore((state) => state.currentUser);
   const getMyAdsListQuery = useQuery({
     queryKey: [EQueryKeys.MyAdsList],
     queryFn: async () => {
-      return await api.get<TResponseGetMyAdsList[]>('/users/products');
+      return await api.get<IResponseGetMyAdsList[]>('/users/products');
     },
 
     enabled: !!currentUser,
@@ -27,4 +30,4 @@ const useHomeQueries = () => {
   };
 };
 
-export default useHomeQueries;
+export default useGetAdsListQueries;
