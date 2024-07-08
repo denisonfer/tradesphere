@@ -17,6 +17,8 @@ interface IAdsBase {
 export interface IResponseGetAds extends IAdsBase {
   user: {
     avatar: string;
+    name: string;
+    tel: string;
   };
 }
 export interface IResponseGetMyAdsList extends IAdsBase {

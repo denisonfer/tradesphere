@@ -4,10 +4,6 @@ import {
   IResponseGetMyAdsList,
 } from '@screens/App/Home/types';
 
-type TMyAdsStackParams = {
-  AddAds: { isEditMode?: boolean };
-  AdsDetail: { adsData: IResponseGetAds; isPreviewMode?: boolean };
-};
 export type TTabParams = {
   Resume: undefined;
   MyAds: undefined;

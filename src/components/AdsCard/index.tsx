@@ -1,10 +1,10 @@
+import Avatar from '@components/Avatar';
 import {
   IResponseGetAds,
   IResponseGetMyAdsList,
 } from '@screens/App/Home/types';
 import getImageUrl from '@shared/getImageUrl';
 import {
-  Avatar,
   Badge,
   Box,
   HStack,
@@ -68,16 +68,7 @@ const AdsCard: React.FC<TProps> = ({ adsItem, onPress, ...rest }) => {
           p={1}
         >
           {'user' in adsItem ? (
-            <Avatar
-              source={{
-                uri: avatarUrl,
-              }}
-              h={7}
-              w={7}
-              mr={2}
-              borderWidth={2}
-              borderColor='gray.700'
-            />
+            <Avatar avatarUrl={avatarUrl} h={7} w={7} renderInProductItem />
           ) : (
             <View h={7} w={7} />
           )}
