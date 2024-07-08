@@ -30,14 +30,23 @@ const Carousel: React.FC<TProps> = ({ data }) => {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
       >
-        {data.map((item) => (
+        {data.length > 0 ? (
+          data.map((item) => (
+            <Image
+              source={{ uri: getImageUrl(item.path) }}
+              alt='Image do produto'
+              w={WIDTH}
+              h='full'
+            />
+          ))
+        ) : (
           <Image
-            source={{ uri: getImageUrl(item.path) }}
+            source={{ uri: getImageUrl(undefined) }}
             alt='Image do produto'
             w={WIDTH}
             h='full'
           />
-        ))}
+        )}
       </ScrollView>
       <HStack justifyContent='center' position='absolute' bottom={1} w={WIDTH}>
         {data.map((item) => (
