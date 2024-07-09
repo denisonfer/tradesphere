@@ -40,7 +40,6 @@ const AddAds: React.FC = () => {
   const route = useRoute<TAddAdsRouteParams>();
   const { params } = route;
   const { isEditMode, adsData } = params;
-  console.tron.log('adsData: ', adsData);
 
   const toast = useToast();
   if (isEditMode && !adsData) {
@@ -58,7 +57,7 @@ const AddAds: React.FC = () => {
   const [acceptTrade, setAcceptTrade] = useState(false);
   const [paymentSelected, setPaymentSelected] = useState<EPaymentMethods[]>([]);
 
-  const { handleCreateAds, isLoading } = useCreateAds();
+  const { handleCreateAds, handleUpdateAds, isLoading } = useCreateAds();
 
   const {
     control,
@@ -98,8 +97,11 @@ const AddAds: React.FC = () => {
         paymentSelected,
       };
 
-      (console as any).tron.log('newAds: ', newAds);
-      // handleCreateAds(newAds, productsImages);
+      if (isEditMode) {
+        handleUpdateAds({ ...newAds, adsId: adsData!.id }, productsImages);
+      } else {
+        handleCreateAds(newAds, productsImages);
+      }
     },
     [
       productsImages,
@@ -107,6 +109,8 @@ const AddAds: React.FC = () => {
       acceptTrade,
       paymentSelected,
       handleCreateAds,
+      handleUpdateAds,
+      adsData,
     ]
   );
 
@@ -133,14 +137,13 @@ const AddAds: React.FC = () => {
         reset({
           name: adsData.name,
           description: adsData.description,
-          price: adsData.price * 100,
+          price: String(adsData.price * 100) as any,
         });
 
         adsData.product_images.forEach((image) => {
           const fileExtension = image.path.split('.').pop();
 
-          setProductsImages((oldState) => [
-            ...oldState,
+          setProductsImages([
             {
               id: image.id,
               uri: getImageUrl(image.path),
