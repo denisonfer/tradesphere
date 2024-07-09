@@ -1,3 +1,4 @@
+import Alert from '@components/Alert';
 import Avatar from '@components/Avatar';
 import Button from '@components/Button';
 import Header from '@components/Header';
@@ -24,10 +25,10 @@ import {
   QrCode,
   Trash,
 } from 'phosphor-react-native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useAuthStore } from 'src/stores/useAuthStore';
 import Carousel from './Carousel';
-import useGetProductByIdQuery from './hooks/useGetProductByIdQuery';
+import useProductByIdQueries from './hooks/useProductByIdQueries';
 
 type TRouteParams = RouteProp<TMainStackParams, 'AdsDetail'>;
 const AdsDetail: React.FC = () => {
@@ -48,10 +49,12 @@ const AdsDetail: React.FC = () => {
     goBack();
   }
 
-  (console as any).tron.log('params: ', params.AdsId);
-
-  const { getProductByIdQuery } = useGetProductByIdQuery(params.AdsId);
+  const { getProductByIdQuery, deleteAdsMutation } = useProductByIdQueries(
+    params.AdsId
+  );
   const { data: adsData, isLoading } = getProductByIdQuery;
+
+  const [isVisibleDeleteModal, setIsVisibleDeleteModal] = useState(false);
 
   const avatarUrl = getImageUrl(
     adsData ? adsData.user.avatar : currentUser?.avatar
@@ -73,6 +76,30 @@ const AdsDetail: React.FC = () => {
     },
     []
   );
+
+  const handleDeleteAds = useCallback(() => {
+    deleteAdsMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.show({
+          description: 'Anúncio excluído com sucesso.',
+          placement: 'top',
+          bg: 'green.500',
+          duration: 3000,
+        });
+        setIsVisibleDeleteModal(false);
+        goBack();
+      },
+      onError: () => {
+        toast.show({
+          description: 'Erro ao excluir o anúncio.',
+          placement: 'top',
+          bg: 'redLight.900',
+          duration: 3000,
+        });
+      },
+    });
+  }, [deleteAdsMutation, goBack, toast]);
+
   return (
     <VStack flex={1} pb={10}>
       <Header
@@ -163,11 +190,21 @@ const AdsDetail: React.FC = () => {
               title='Excluir anúncio'
               bgColor='gray.500'
               iconLeft={<Trash size={18} color={colors.gray[200]} />}
-              onPress={() => {}}
+              onPress={() => setIsVisibleDeleteModal(true)}
             />
           </VStack>
         </ScrollView>
       )}
+
+      <Alert
+        isVisible={isVisibleDeleteModal}
+        isLoading={deleteAdsMutation.isPending}
+        title='Excluir anúncio'
+        message='Tem certeza que deseja excluir este anúncio?'
+        textButtonOk='Excluir'
+        onPressCancel={() => setIsVisibleDeleteModal(false)}
+        onPressOK={handleDeleteAds}
+      />
     </VStack>
   );
 };

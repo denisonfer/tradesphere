@@ -1,7 +1,11 @@
 import AdsCard from '@components/AdsCard';
 import Header from '@components/Header';
 import Loading from '@components/Loading';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import { TMainStackParams } from '@routes/types';
 import useGetAdsListQueries from '@shared/hooks/useGetAdsListQueries';
 import { IResponseGetMyAdsList } from '@shared/interfaces/IProductAds';
@@ -67,6 +71,12 @@ const MyAds: React.FC = () => {
         return myAdsList;
     }
   }, [myAdsList, selectedFilter]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
 
   return (
     <VStack flex={1}>
