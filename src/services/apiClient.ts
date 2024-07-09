@@ -1,5 +1,6 @@
 import { decodeJWT } from '@utils/decodeJWT';
 import axios, { AxiosError, AxiosRequestConfig, Method } from 'axios';
+import { useToast } from 'native-base';
 import { BASE_API_URL } from 'src/envs';
 import { ApiError } from 'src/errors/apiError';
 import { useAuthStore } from 'src/stores/useAuthStore';
@@ -74,6 +75,7 @@ export class ApiClient {
 
   private handleError(error: AxiosError): never {
     if (!error?.isAxiosError) throw error;
+
     throw new ApiError(error?.config, error?.response, error);
   }
 
@@ -126,9 +128,13 @@ export class ApiClient {
           return token;
         })
         .catch((error) => {
-          if (error.status === 401) {
-            useAuthStore.getState().clearTokens();
-          }
+          useToast().show({
+            description: 'Sessão expirada, por favor refaça o login!',
+            placement: 'top',
+            bg: 'error.500',
+            duration: 3000,
+          });
+          useAuthStore.getState().clearTokens();
         })
         .finally(() => {
           this.refreshTokenInProgress = null;

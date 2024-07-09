@@ -4,6 +4,7 @@ import Loading from '@components/Loading';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { TMainStackParams } from '@routes/types';
 import useGetAdsListQueries from '@shared/hooks/useGetAdsListQueries';
+import { IResponseGetMyAdsList } from '@shared/interfaces/IProductAds';
 import {
   FlatList,
   HStack,
@@ -15,7 +16,6 @@ import {
 } from 'native-base';
 import { Check, Plus } from 'phosphor-react-native';
 import React, { useCallback, useMemo, useState } from 'react';
-import { IResponseGetMyAdsList } from '../Home/types';
 
 type TNavigationProps = NavigationProp<TMainStackParams>;
 
@@ -46,7 +46,7 @@ const MyAds: React.FC = () => {
 
   const handleViewAds = useCallback(
     (item: IResponseGetMyAdsList) => {
-      navigate('AdsDetail', { adsData: item, isPreviewMode: false });
+      navigate('AdsDetail', { AdsId: item.id, isPreviewMode: false });
     },
     [navigate]
   );

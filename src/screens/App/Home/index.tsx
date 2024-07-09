@@ -23,9 +23,9 @@ import HomeHeader from './HomeHeader';
 
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { TMainStackParams } from '@routes/types';
+import { IResponseGetAds } from '@shared/interfaces/IProductAds';
 import useGetAdsListQueries from '../../../shared/hooks/useGetAdsListQueries';
 import FilterModal from './FilterModal';
-import { IResponseGetAds } from './types';
 
 type THomeNavigationProps = NavigationProp<TMainStackParams, 'Home'>;
 
@@ -48,9 +48,12 @@ const Home: React.FC = () => {
     navigate('Home', { screen: 'MyAds' });
   }, []);
 
-  const handleNavigateToAdsDetail = useCallback((item: IResponseGetAds) => {
-    navigate('AdsDetail', { adsData: item, isPreviewMode: false });
-  }, []);
+  const handleNavigateToAdsDetail = useCallback(
+    (item: IResponseGetAds) => {
+      navigate('AdsDetail', { AdsId: item.id, isPreviewMode: false });
+    },
+    [navigate]
+  );
 
   return (
     <VStack flex={1} px={6} pt={6}>

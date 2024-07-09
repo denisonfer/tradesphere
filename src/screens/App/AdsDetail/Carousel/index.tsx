@@ -33,6 +33,7 @@ const Carousel: React.FC<TProps> = ({ data }) => {
         {data.length > 0 ? (
           data.map((item) => (
             <Image
+              key={item.id}
               source={{ uri: getImageUrl(item.path) }}
               alt='Image do produto'
               w={WIDTH}

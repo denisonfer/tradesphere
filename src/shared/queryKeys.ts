@@ -4,4 +4,5 @@ export enum EQueryKeys {
   AdsList = 'AdsList',
   AdsImage = 'AdsImage',
   MyAdsList = 'MyAdsList',
+  ProductById = 'ProductById',
 }

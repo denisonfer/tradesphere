@@ -1,11 +1,11 @@
+import {
+  IResponseGetAds,
+  IResponseGetMyAdsList,
+} from '@shared/interfaces/IProductAds';
 import { EQueryKeys } from '@shared/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 import { api } from 'src/services/api';
 import { useAuthStore } from 'src/stores/useAuthStore';
-import {
-  IResponseGetAds,
-  IResponseGetMyAdsList,
-} from '../../screens/App/Home/types';
 
 const useGetAdsListQueries = () => {
   const currentUser = useAuthStore((state) => state.currentUser);

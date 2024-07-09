@@ -1,8 +1,4 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
-import {
-  IResponseGetAds,
-  IResponseGetMyAdsList,
-} from '@screens/App/Home/types';
 
 export type TTabParams = {
   Resume: undefined;
@@ -14,7 +10,7 @@ export type TMainStackParams = {
   Home: NavigatorScreenParams<TTabParams>;
   AddAds: { isEditMode?: boolean };
   AdsDetail: {
-    adsData: IResponseGetAds | IResponseGetMyAdsList;
+    AdsId: string;
     isPreviewMode?: boolean;
   };
 };
