@@ -1,20 +1,14 @@
 import Header from '@components/Header';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  RouteProp,
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { HStack, VStack, useToast } from 'native-base';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as yup from 'yup';
 
 import Button from '@components/Button';
 import { TMainStackParams } from '@routes/types';
-import getImageUrl from '@shared/getImageUrl';
 import { MaskService } from 'react-native-masked-text';
 import AboutProductSection from './AboutProductSection';
 import ImageSection from './ImageSection';
@@ -52,6 +46,7 @@ const AddAds: React.FC = () => {
     goBack();
   }
 
+  const [oldImagesId, setOldImagesId] = useState<string[]>([]);
   const [productsImages, setProductsImages] = useState<TProductImage[]>([]);
   const [productIsNew, setProductIsNew] = useState('true');
   const [acceptTrade, setAcceptTrade] = useState(false);
@@ -127,39 +122,36 @@ const AddAds: React.FC = () => {
     [paymentSelected]
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if (!isEditMode) {
-        reset();
-      }
+  useEffect(() => {
+    if (isEditMode && adsData) {
+      reset({
+        name: adsData.name,
+        description: adsData.description,
+        price: String(adsData.price * 100) as any,
+      });
+      setProductIsNew(adsData.is_new ? 'true' : 'false');
+      setAcceptTrade(adsData.accept_trade);
+      setPaymentSelected(
+        adsData.payment_methods.map((item) => item.key as EPaymentMethods)
+      );
 
-      if (isEditMode && adsData) {
-        reset({
-          name: adsData.name,
-          description: adsData.description,
-          price: String(adsData.price * 100) as any,
-        });
+      adsData.product_images.forEach((image) => {
+        const fileExtension = image.path.split('.').pop();
 
-        adsData.product_images.forEach((image) => {
-          const fileExtension = image.path.split('.').pop();
+        setOldImagesId(adsData.product_images.map((image) => image.id));
 
-          setProductsImages([
-            {
-              id: image.id,
-              uri: getImageUrl(image.path),
-              name: `${image.id}.${fileExtension}`,
-              type: `image/${fileExtension}`,
-            },
-          ]);
-        });
-        setProductIsNew(adsData.is_new ? 'true' : 'false');
-        setAcceptTrade(adsData.accept_trade);
-        setPaymentSelected(
-          adsData.payment_methods.map((item) => item.key as EPaymentMethods)
-        );
-      }
-    }, [isEditMode, adsData, reset])
-  );
+        setProductsImages((oldState) => [
+          ...oldState,
+          {
+            uri: image.path,
+            id: image.id,
+            type: `image/${fileExtension}`,
+            name: `${image.id}.${fileExtension}`,
+          } as TProductImage,
+        ]);
+      });
+    }
+  }, [adsData, isEditMode]);
 
   return (
     <VStack flex={1}>

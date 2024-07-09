@@ -52,7 +52,9 @@ const useCreateAds = () => {
       const formData = new FormData();
       formData.append('product_id', data.productId);
       data.images.forEach((image) => {
-        formData.append('images', image as any);
+        if (image.uri.includes('file://')) {
+          formData.append('images', image as any);
+        }
       });
 
       return await api.post('/products/images', formData);

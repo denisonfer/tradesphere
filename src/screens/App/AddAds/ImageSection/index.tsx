@@ -15,6 +15,7 @@ import {
 import { Plus, X } from 'phosphor-react-native';
 import React, { Dispatch, SetStateAction, useCallback } from 'react';
 
+import getImageUrl from '@shared/getImageUrl';
 import { TProductImage } from '../types';
 
 type TProps = {
@@ -97,7 +98,9 @@ const ImageSection: React.FC<TProps> = ({
           >
             <Image
               source={{
-                uri: image.uri,
+                uri: image.uri.includes('file://')
+                  ? image.uri
+                  : getImageUrl(image.uri),
               }}
               alt='Imagem do anúncio'
               w='full'
