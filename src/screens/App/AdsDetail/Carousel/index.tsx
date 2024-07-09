@@ -1,16 +1,17 @@
 import getImageUrl from '@shared/getImageUrl';
 import { WIDTH } from '@utils/index';
-import { Box, HStack, Image, ScrollView, View } from 'native-base';
+import { Box, HStack, Image, ScrollView, Text, View } from 'native-base';
 import React, { useCallback, useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
 type TProps = {
+  adsIsActive: boolean;
   data: {
     path: string;
     id: string;
   }[];
 };
-const Carousel: React.FC<TProps> = ({ data }) => {
+const Carousel: React.FC<TProps> = ({ data, adsIsActive }) => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleScroll = useCallback(
@@ -24,6 +25,28 @@ const Carousel: React.FC<TProps> = ({ data }) => {
   );
   return (
     <Box w={WIDTH} h={300} position='relative'>
+      {!adsIsActive && (
+        <View
+          position='absolute'
+          h='full'
+          w='full'
+          bg='rgba(0,0,0,0.5)'
+          rounded='md'
+          zIndex={1}
+          justifyContent='center'
+          alignItems='center'
+        >
+          <Text
+            color='gray.700'
+            fontFamily='heading'
+            position='absolute'
+            zIndex={2}
+          >
+            ANÚNCIO DESATIVADO
+          </Text>
+        </View>
+      )}
+
       <ScrollView
         horizontal
         pagingEnabled

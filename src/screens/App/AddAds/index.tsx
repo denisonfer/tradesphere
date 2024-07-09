@@ -14,6 +14,7 @@ import * as yup from 'yup';
 
 import Button from '@components/Button';
 import { TMainStackParams } from '@routes/types';
+import getImageUrl from '@shared/getImageUrl';
 import { MaskService } from 'react-native-masked-text';
 import AboutProductSection from './AboutProductSection';
 import ImageSection from './ImageSection';
@@ -38,7 +39,19 @@ const AddAds: React.FC = () => {
   const { goBack } = useNavigation();
   const route = useRoute<TAddAdsRouteParams>();
   const { params } = route;
+  const { isEditMode, adsData } = params;
+  console.tron.log('adsData: ', adsData);
+
   const toast = useToast();
+  if (isEditMode && !adsData) {
+    toast.show({
+      description: 'Anúncio não localizado.',
+      placement: 'top',
+      bg: 'blueLight.900',
+      duration: 3000,
+    });
+    goBack();
+  }
 
   const [productsImages, setProductsImages] = useState<TProductImage[]>([]);
   const [productIsNew, setProductIsNew] = useState('true');
@@ -51,7 +64,6 @@ const AddAds: React.FC = () => {
     control,
     handleSubmit,
     formState: { errors },
-    register,
     reset,
   } = useForm<TAdsFormData>({
     resolver: yupResolver(adsSchema),
@@ -86,7 +98,8 @@ const AddAds: React.FC = () => {
         paymentSelected,
       };
 
-      handleCreateAds(newAds, productsImages);
+      (console as any).tron.log('newAds: ', newAds);
+      // handleCreateAds(newAds, productsImages);
     },
     [
       productsImages,
@@ -112,15 +125,42 @@ const AddAds: React.FC = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!params?.isEditMode) {
+      if (!isEditMode) {
         reset();
       }
-    }, [params?.isEditMode])
+
+      if (isEditMode && adsData) {
+        reset({
+          name: adsData.name,
+          description: adsData.description,
+          price: adsData.price * 100,
+        });
+
+        adsData.product_images.forEach((image) => {
+          const fileExtension = image.path.split('.').pop();
+
+          setProductsImages((oldState) => [
+            ...oldState,
+            {
+              id: image.id,
+              uri: getImageUrl(image.path),
+              name: `${image.id}.${fileExtension}`,
+              type: `image/${fileExtension}`,
+            },
+          ]);
+        });
+        setProductIsNew(adsData.is_new ? 'true' : 'false');
+        setAcceptTrade(adsData.accept_trade);
+        setPaymentSelected(
+          adsData.payment_methods.map((item) => item.key as EPaymentMethods)
+        );
+      }
+    }, [isEditMode, adsData, reset])
   );
 
   return (
     <VStack flex={1}>
-      <Header title={params?.isEditMode ? 'Editar anúncio' : 'Criar anúncio'} />
+      <Header title={isEditMode ? 'Editar anúncio' : 'Criar anúncio'} />
       <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         <VStack px={6} pb={24}>
           <ImageSection

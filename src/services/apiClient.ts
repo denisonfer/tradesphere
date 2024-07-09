@@ -33,6 +33,10 @@ export class ApiClient {
     return this.request<T>({ method: 'PUT', url, data: body });
   }
 
+  public async patch<T = any>(url: string, body?: any): Promise<T> {
+    return this.request<T>({ method: 'PATCH', url, data: body });
+  }
+
   public async del<T = any>(url: string, params?: any): Promise<T> {
     return this.request<T>({ method: 'DELETE', url, ...params });
   }
@@ -62,7 +66,10 @@ export class ApiClient {
           ...(await this.getHeaders(data, isRefresh)),
         },
         params: method === 'GET' ? formattedParams : undefined,
-        data: method === 'POST' || method === 'PUT' ? data : undefined,
+        data:
+          method === 'POST' || method === 'PUT' || method === 'PATCH'
+            ? data
+            : undefined,
       };
       const response = await axios.request(config);
       if (isPaginated) return response?.data;

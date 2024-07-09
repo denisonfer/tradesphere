@@ -36,35 +36,25 @@ const SaleSection: React.FC<TProps> = ({
         name='price'
         control={control}
         render={({ field: { onChange, value } }) => (
-          <>
-            <TextInputMask
-              type='money'
-              options={{
-                precision: 2,
-                separator: ',',
-                delimiter: '.',
-                unit: '',
-                suffixUnit: '',
-              }}
-              placeholder='Valor do produto'
-              onChangeText={onChange}
-              value={String(value)}
-              keyboardType='numeric'
-              customTextInput={Input}
-              customTextInputProps={{
-                errorMessage: errors.price?.message,
-                InputLeftElement: <Label text='R$' ml={2} />,
-              }}
-            />
-            {/* <Input
-              placeholder='Valor do produto'
-              onChangeText={onChange}
-              value={value}
-              InputLeftElement={<Label text='R$' />}
-              keyboardType='numeric'
-              errorMessage={errors.price?.message}
-            /> */}
-          </>
+          <TextInputMask
+            type='money'
+            options={{
+              precision: 2,
+              separator: ',',
+              delimiter: '.',
+              unit: '',
+              suffixUnit: '',
+            }}
+            placeholder='Valor do produto'
+            onChangeText={onChange}
+            value={String(value)}
+            keyboardType='numeric'
+            customTextInput={Input}
+            customTextInputProps={{
+              errorMessage: errors.price?.message,
+              InputLeftElement: <Label text='R$' ml={2} />,
+            }}
+          />
         )}
       />
 

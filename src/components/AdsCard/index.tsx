@@ -1,9 +1,10 @@
 import Avatar from '@components/Avatar';
+
+import getImageUrl from '@shared/getImageUrl';
 import {
   IResponseGetAds,
   IResponseGetMyAdsList,
-} from '@screens/App/Home/types';
-import getImageUrl from '@shared/getImageUrl';
+} from '@shared/interfaces/IProductAds';
 import {
   Badge,
   Box,
@@ -18,7 +19,7 @@ import {
 import React from 'react';
 
 type TProps = IPressableProps & {
-  adsItem: IResponseGetAds | IResponseGetMyAdsList;
+  adsItem: IResponseGetMyAdsList | IResponseGetAds;
   onPress: () => void;
 };
 

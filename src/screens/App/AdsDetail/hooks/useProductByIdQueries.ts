@@ -29,9 +29,29 @@ const useProductByIdQueries = (adsId: string) => {
     },
   });
 
+  const updateAdsIsActiveMutation = useMutation({
+    mutationKey: [EQueryKeys.ProductById],
+    mutationFn: async (value: boolean) => {
+      return await api.patch(`/products/${adsId}`, {
+        is_active: value,
+      });
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          EQueryKeys.AdsList,
+          EQueryKeys.MyAdsList,
+          EQueryKeys.ProductById,
+        ],
+      });
+    },
+  });
+
   return {
     getProductByIdQuery,
     deleteAdsMutation,
+    updateAdsIsActiveMutation,
   };
 };
 

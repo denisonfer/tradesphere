@@ -50,6 +50,7 @@ const AboutProductSection: React.FC<TProps> = ({
       <Radio.Group
         name='isNew'
         defaultValue='true'
+        value={productIsNew}
         accessibilityLabel='Is new'
         onChange={(value) => setProductIsNew(value)}
       >
